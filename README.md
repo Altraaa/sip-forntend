@@ -21,5 +21,5 @@ Run the Project
 To start the development server, use the command:
 
 "npm start"
-x
+
 The project will run at http://localhost:5173 by default.
