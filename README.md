@@ -25,7 +25,7 @@ Pastikan Anda sudah menginstal alat berikut di komputer Anda:
    cd nama-folder-proyek
    ```
 
-3. **Instal Dependensi PHP**
+3. **Instal Dependensi**
 
    Instal semua dependensi React dan vite menggunakan NPM (Node Package Manager):
    ```bash
@@ -36,7 +36,7 @@ Pastikan Anda sudah menginstal alat berikut di komputer Anda:
 
     Jalankan server pengembangan Laravel:
     ```bash
-    php artisan serve
+    npm start
     ```
 
     Server akan berjalan di `http://localhost:5173`.
