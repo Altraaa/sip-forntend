@@ -1,7 +1,7 @@
 import {
   ChevronLeft,
   LogOut,
-  LifeBuoy,
+  CircleHelp,
   GraduationCap,
   Boxes,
   UserCircle,
@@ -25,13 +25,12 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   return (
     <aside
-      className={`flex flex-col border-r-2 shadow-2xl transition-all ${
+      className={`flex flex-col border-r-2 shadow-2xl rounded-r-2xl transition-all ${
         expanded ? "w-16" : "w-64"
       }`}
     >
-      <nav className="flex flex-col h-full justify-between">
-        <div>
-          <div className="p-4 bg-emerald-200 flex justify-between items-center">
+      <nav className="flex flex-col h-full">
+          <div className="p-4 flex justify-between items-center rounded-r-2xl bg-emerald-300">
             <img
               src={Avatars}
               className={`overflow-hidden transition-all ${
@@ -45,7 +44,7 @@ export default function Sidebar() {
               onClick={() => setExpanded((curr) => !curr)}
             >
               <div
-                className={`transition-transform duration-300 ease-in-out ${
+                className={`transition-transform duration-500 ease-in-out ${
                   expanded ? "rotate-180" : "rotate-0"
                 }`}
               >
@@ -61,8 +60,6 @@ export default function Sidebar() {
                 alert
               />
               <SidebarItem icon={<Layers3 size={20} />} text="Class" active />
-              <SidebarItem icon={<UserCircle size={20} />} text="Users" />
-              <SidebarItem icon={<Boxes size={20} />} text="Major" />
               <SidebarItem
                 icon={<Calendar size={20} />}
                 text="Schedule"
@@ -71,11 +68,10 @@ export default function Sidebar() {
               <SidebarItem icon={<GraduationCap size={20} />} text="Teacher" />
               <hr className="my-3" />
               <SidebarItem icon={<Settings size={20} />} text="Settings" />
-              <SidebarItem icon={<LifeBuoy size={20} />} text="Help" />
+              <SidebarItem icon={<CircleHelp size={20} />} text="Help" />
             </ul>
           </SidebarContext.Provider>
-        </div>
-        <div className="border-t flex items-center p-3 px-4 transition-all ease-in-out">
+        <div className="border-t flex bottom-0 absolute items-center p-3 px-4 transition-all ease-in-out">
           <img
             src={Avatars}
             alt="User Avatar"
