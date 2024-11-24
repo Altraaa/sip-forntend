@@ -1,4 +1,4 @@
-import Sidebar from "../layouts/Sidebar";
+import Sidebar from "../components/Sidebar";
 import Avatars from "./../../assets/images/dummyAvatar.png";
 import { Bell, Search } from "lucide-react";
 
