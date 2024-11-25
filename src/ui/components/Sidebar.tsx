@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Settings,
   Calendar,
+  User,
 } from "lucide-react";
 import Avatars from "./../../assets/images/dummyAvatar.png";
 import { createContext, useContext, useState } from "react";
@@ -49,7 +50,7 @@ export default function Sidebar() {
         expanded ? "w-16" : "w-80"
       }`}
     >
-      <nav className="flex flex-col h-full">
+      <nav className="flex flex-col h-full space-y-3">
         <div className="p-4 flex justify-between items-center rounded-r-2xl bg-emerald-300">
           <img
             src={Avatars}
@@ -72,7 +73,7 @@ export default function Sidebar() {
             </div>
           </button>
         </div>
-        <ul className="flex flex-col px-3 h-full">
+        <ul className="flex flex-col px-3 h-full space-y-2">
           <SidebarItem
             icon={<LayoutDashboard size={20} />}
             link="/"
@@ -97,9 +98,25 @@ export default function Sidebar() {
             text="Teacher"
             active={location.pathname === "/teacher"}
           />
-          <hr className="my-3" />
-          <SidebarItem icon={<Settings size={20} />} text="Settings" />
-          <SidebarItem icon={<CircleHelp size={20} />} text="Help" />
+          <hr />
+          <SidebarItem
+            icon={<User size={20} />}
+            link="/profile"
+            text="Profile"
+            active={location.pathname === "/profile"}
+          />
+          <SidebarItem
+            icon={<Settings size={20} />}
+            link="/settings"
+            text="Settings"
+            active={location.pathname === "/settings"}
+          />
+          <SidebarItem
+            icon={<CircleHelp size={20} />}
+            link="/help"
+            text="Help"
+            active={location.pathname === "/help"}
+          />
         </ul>
         <div className="border-t flex items-center p-3 px-4 transition-all ease-in-out">
           <img
@@ -171,11 +188,6 @@ export function SidebarItem({
               expanded ? "opacity-0" : "opacity-100"
             }`}
           />
-        )}
-        {expanded && (
-          <div className="absolute -z-50 left-full rounded-md px-2 py-1 ml-6 bg-green-100 text-green-800 text-sm transform origin-left transition-all duration-200 opacity-0 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0">
-            {text}
-          </div>
         )}
       </li>
     </Link>
