@@ -46,12 +46,12 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`flex flex-col border-r-2 shadow-2xl rounded-r-2xl transition-all ${
+      className={`flex flex-col border-r-2 shadow-2xl h rounded-r-2xl transition-all ${
         expanded ? "w-16" : "w-80"
       }`}
     >
       <nav className="flex flex-col h-full space-y-3">
-        <div className="p-4 flex justify-between items-center rounded-r-2xl bg-emerald-300">
+        <div className="p-4 flex justify-between items-center rounded-r-2xl bg-customColor-blue">
           <img
             src={Avatars}
             className={`overflow-hidden transition-all ${
@@ -84,6 +84,7 @@ export default function Sidebar() {
             icon={<Layers3 size={20} />}
             link="/class"
             text="Class"
+            alert
             active={location.pathname === "/class"}
           />
           <SidebarItem
@@ -168,7 +169,7 @@ export function SidebarItem({
       <li
         className={`relative flex items-center gap-2 py-2 px-2 my-1 font-medium rounded-md cursor-pointer transition-all duration-300 group ${
           active
-            ? "bg-gradient-to-tr from-green-200 to-green-100 text-green-800"
+            ? "bg-gradient-to-tr from-blue-200 to-blue-100 text-customColor-darkBlue"
             : "hover:bg-green-50 text-gray-700"
         }`}
       >
@@ -184,7 +185,7 @@ export function SidebarItem({
         </span>
         {alert && (
           <div
-            className={`absolute w-2 h-2 bg-green-500 rounded-full right-2 top-1/2 transform -translate-y-1/2 ${
+            className={`absolute w-2 h-2 bg-customColor-lightBlue rounded-full right-2 top-1/2 transform -translate-y-1/2 ${
               expanded ? "opacity-0" : "opacity-100"
             }`}
           />
