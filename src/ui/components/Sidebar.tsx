@@ -102,7 +102,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Overlay untuk mobile */}
       <div
         className={`fixed inset-0 bg-black/30 z-40 transition-opacity md:hidden ${
           expanded ? "opacity-100 visible" : "opacity-0 invisible"
@@ -110,7 +109,6 @@ const Sidebar = () => {
         onClick={toggleSidebar}
       />
 
-      {/* Desktop Sidebar */}
       <aside
         className={`hidden fixed md:relative z-50 md:z-0 bg-white flex-col border-r-2 shadow-2xl h-screen md:flex rounded-r-2xl transition-all ${
           expanded ? "w-16" : "w-80"
@@ -172,7 +170,6 @@ const Sidebar = () => {
         </nav>
       </aside>
 
-      {/* Mobile Sidebar - menggunakan menuItems yang sama */}
       <aside
         className={`fixed md:hidden flex flex-col z-50 w-64 bg-white shadow-xl h-full rounded-r-2xl transition-transform duration-300 ${
           expanded ? "-translate-x-0" : "-translate-x-full"
