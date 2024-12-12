@@ -19,40 +19,101 @@ interface HeaderProps {
   toggleSidebar: () => void;
 }
 
-interface NotificationPopupProps {
-  onClose: () => void;
-  notifications?: Array<{
-    id: string;
-    message: string;
-    time: string;
-  }>;
+interface Notification {
+  id: string;
+  message: string;
+  time: string;
+  isRead?: boolean;
+  detail?: string;
+  deadline?: string;
 }
 
-const NotificationPopup = ({ onClose, notifications = [] }: NotificationPopupProps) => (
+interface NotificationPopupProps {
+  onClose: () => void;
+  notifications?: Notification[];
+  onMarkAsRead: (id: string) => void;
+  onViewDetail: (notification: Notification) => void;
+  onDeleteOne: (id: string) => void;
+  onDeleteAll: () => void;
+}
+
+const NotificationPopup = ({ 
+  onClose, 
+  notifications = [],
+  onMarkAsRead,
+  onViewDetail,
+  onDeleteOne,
+  onDeleteAll
+}: NotificationPopupProps) => (
   <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border p-4 z-50">
     <div className="flex justify-between items-center mb-4">
       <h3 className="font-semibold">Notifications</h3>
-      <button 
-        onClick={onClose}
-        className="p-1 hover:bg-gray-100 rounded-full"
-      >
-        <X size={16} />
-      </button>
+      <div className="flex items-center gap-2">
+        {notifications.length > 0 && (
+          <button 
+            onClick={onDeleteAll}
+            className="text-xs text-red-600 hover:text-red-800"
+          >
+            Clear all
+          </button>
+        )}
+        <button 
+          onClick={onClose}
+          className="p-1 hover:bg-gray-100 rounded-full"
+        >
+          <X size={16} />
+        </button>
+      </div>
     </div>
-    <div className="max-h-80 overflow-y-auto">
+    <div className="max-h-80 overflow-y-auto 
+      [&::-webkit-scrollbar]:w-1.5
+      [&::-webkit-scrollbar-track]:bg-transparent
+      [&::-webkit-scrollbar-thumb]:bg-customColor-blue
+      [&::-webkit-scrollbar-thumb]:rounded-full
+      [&::-webkit-scrollbar-thumb]:hover:bg-customColor-blue/80">
       {notifications.length > 0 ? (
         notifications.map((notif) => (
           <div 
             key={notif.id} 
-            className="p-3 hover:bg-gray-50 rounded-lg mb-2 border-b"
+            className={`p-3 hover:bg-gray-50 rounded-lg mb-2 border-b relative cursor-pointer group ${
+              !notif.isRead ? 'bg-blue-50' : ''
+            }`}
+            onClick={() => onViewDetail(notif)}
           >
-            <p className="text-sm">{notif.message}</p>
+            <div className="flex justify-between items-start">
+              <p className="text-sm">{notif.message}</p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteOne(notif.id);
+                }}
+                className="p-1 hover:bg-red-100 rounded-full text-red-600"
+              >
+                <X size={14} />
+              </button>
+            </div>
             <span className="text-xs text-gray-500">{notif.time}</span>
+            <div className="flex gap-2 mt-2">
+              {!notif.isRead && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onMarkAsRead(notif.id);
+                  }}
+                  className="text-xs text-blue-600 hover:text-blue-800"
+                >
+                  Mark as read
+                </button>
+              )}
+              <span className="text-xs text-blue-600 group-hover:text-blue-800">
+                See Details
+              </span>
+            </div>
           </div>
         ))
       ) : (
         <div className="text-center py-8 text-gray-500">
-          There are no notifications for you
+          No notifications
         </div>
       )}
     </div>
@@ -69,6 +130,69 @@ const Header = ({
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  
+  // Data notifikasi default
+  const defaultNotifications = [
+    {
+      id: "1",
+      message: "New task has been posted",
+      time: "5 minutes ago",
+      isRead: false,
+      detail:
+        "The teacher has posted a new task for the subject Discrete Mathematics.",
+      deadline: "7 days away",
+    },
+    {
+      id: "2",
+      message: "Class announcement",
+      time: "1 hour ago",
+      isRead: false,
+      detail: "The class tomorrow will be held online via Zoom.",
+    },
+    {
+      id: "4",
+      message: "Assignment reminder",
+      time: "2 hours ago",
+      isRead: false,
+      detail: "You have a pending assignment for Database Management System.",
+      deadline: "3 days away",
+    },
+    {
+      id: "5",
+      message: "Assignment reminder",
+      time: "2 hours ago",
+      isRead: false,
+      detail: "You have a pending assignment for Database Management System.",
+      deadline: "3 days away",
+    },
+    {
+      id: "6",
+      message: "Assignment reminder",
+      time: "2 hours ago",
+      isRead: false,
+      detail: "You have a pending assignment for Database Management System.",
+      deadline: "3 days away",
+    },
+    {
+      id: "7",
+      message: "Assignment reminder",
+      time: "2 hours ago",
+      isRead: false,
+      detail: "You have a pending assignment for Database Management System.",
+      deadline: "3 days away",
+    },
+    {
+      id: "8",
+      message: "Assignment reminder",
+      time: "2 hours ago",
+      isRead: false,
+      detail: "You have a pending assignment for Database Management System.",
+      deadline: "3 days away",
+    }
+  ];
+  
+  const [notifications, setNotifications] = useState<Notification[]>(defaultNotifications);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -79,18 +203,34 @@ const Header = ({
   const toggleMobileSearch = () => setShowMobileSearch(prev => !prev);
   const toggleNotifications = () => setShowNotifications(prev => !prev);
 
-  // Dummy notifications - replace with real data
-  const notifications = [
-    {
-      id: '1',
-      message: 'New assignment has been posted',
-      time: '5 minutes ago'
-    },
-  ];
+  const handleMarkAsRead = (id: string) => {
+    setNotifications(prev => 
+      prev.map(notif =>
+        notif.id === id ? { ...notif, isRead: true } : notif
+      )
+    );
+  };
 
-  return (
+  const handleViewDetail = (notification: Notification) => {
+    setSelectedNotification(notification);
+    if (!notification.isRead) {
+      handleMarkAsRead(notification.id);
+    }
+  };
+
+  const handleDeleteNotification = (id: string) => {
+    setNotifications(prev => prev.filter(notif => notif.id !== id));
+  };
+
+  const handleDeleteAllNotifications = () => {
+    setNotifications([]);
+    localStorage.setItem('notifications', JSON.stringify([]));
+  };
+
+  const unreadNotifications = notifications.filter(n => !n.isRead).length;
+
+  return (    
     <header className="w-full md:p-4 md:py-6 md:px-10 xl:px-12 2xl:px-24 md:pt-6 py-3 p-2">
-      {/* Mobile Search Overlay yang lebih compact */}
       {showMobileSearch && (
         <div className="absolute top-0 left-0 right-0 bg-white z-50 p-2 md:hidden shadow-lg">
           <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-2">
@@ -122,7 +262,7 @@ const Header = ({
           >
             <Menu size={25} />
           </button>
-          <h1 className="uppercase font-bold md:text-3xl text-lg text-black">
+          <h1 className="uppercase font-bold md:text-3xl xl:text-4xl text-lg text-black">
             {title}
           </h1>
         </div>
@@ -156,12 +296,15 @@ const Header = ({
           <div className="relative">
             <button
               onClick={toggleNotifications}
-              className="p-2 hover:bg-gray-200 rounded-full transition-all duration-300"
+              className="p-2 hover:bg-gray-200 rounded-full transition-all duration-300 relative"
             >
               <Bell 
                 size={25} 
                 className="cursor-pointer text-gray-700 hover:text-black" 
               />
+              {unreadNotifications > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
+              )}
             </button>
             
             {showNotifications && (
@@ -173,12 +316,38 @@ const Header = ({
                 <NotificationPopup 
                   onClose={() => setShowNotifications(false)}
                   notifications={notifications}
+                  onMarkAsRead={handleMarkAsRead}
+                  onViewDetail={handleViewDetail}
+                  onDeleteOne={handleDeleteNotification}
+                  onDeleteAll={handleDeleteAllNotifications}
                 />
               </>
             )}
           </div>
         </div>
       </div>
+
+      {selectedNotification && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold">Detail Notifikasi</h3>
+              <button 
+                onClick={() => setSelectedNotification(null)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-sm mb-2">{selectedNotification.message}</p>
+            <p className="text-sm text-gray-600 mb-4">{selectedNotification.detail}</p>
+            {selectedNotification.deadline && (
+              <p className="text-xs text-orange-600 mb-2">Deadline: {selectedNotification.deadline}</p>
+            )}
+            <p className="text-xs text-gray-500">{selectedNotification.time}</p>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
