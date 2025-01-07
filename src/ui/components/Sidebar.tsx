@@ -136,7 +136,7 @@ const Sidebar = () => {
           <ul className="flex flex-col px-3 h-full space-y-2">
             {menuItems.map((item) => (
               <div key={item.link}>
-                {item.divider && <hr />}
+                {item.divider && <hr className="mb-3" />}
                 <SidebarItem
                   icon={item.icon}
                   text={item.text}
@@ -170,6 +170,7 @@ const Sidebar = () => {
         </nav>
       </aside>
 
+      {/* Mobile Sidebar */}
       <aside
         className={`fixed md:hidden flex flex-col z-50 w-64 bg-white shadow-xl h-full rounded-r-2xl transition-transform duration-300 ${
           expanded ? "-translate-x-0" : "-translate-x-full"
@@ -190,7 +191,7 @@ const Sidebar = () => {
           <ul className="flex flex-col px-3 h-full space-y-2">
             {menuItems.map((item) => (
               <div key={item.link}>
-                {item.divider && <hr />}
+                {item.divider && <hr className="mb-3" />}
                 <SidebarItem
                   icon={item.icon}
                   text={item.text}

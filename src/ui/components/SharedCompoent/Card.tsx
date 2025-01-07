@@ -6,6 +6,7 @@ interface CardProps {
   desc?: string;
   icon?: React.ReactNode;
   iconClassName?: string;
+  children?: React.ReactNode;
 }
 
 const Card = ({
@@ -16,6 +17,7 @@ const Card = ({
   desc,
   icon,
   iconClassName,
+  children,
 }: CardProps) => {
   const containedBlue = "bg-customColor-blue text-black";
   const containedDarkBlue = "bg-customColor-darkBlue text-white";
@@ -56,10 +58,14 @@ const Card = ({
           {icon}
         </div>
       )}
-      <div>
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <p className="text-xs">{desc}</p>
-      </div>
+      {children ? (
+        children
+      ) : (
+        <div>
+          <h2 className="text-sm font-semibold">{title}</h2>
+          <p className="text-xs">{desc}</p>
+        </div>
+      )}
     </div>
   );
 };

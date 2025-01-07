@@ -45,7 +45,7 @@ const NotificationPopup = ({
   onDeleteOne,
   onDeleteAll
 }: NotificationPopupProps) => (
-  <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border p-4 z-50">
+  <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-2xl border p-4 z-50">
     <div className="flex justify-between items-center mb-4">
       <h3 className="font-semibold">Notifications</h3>
       <div className="flex items-center gap-2">
