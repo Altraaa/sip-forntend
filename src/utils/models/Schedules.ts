@@ -1,6 +1,5 @@
 import { IClassroom } from "./Classroom";
 import { ISubject } from "./Subject";
-import { ITeacher } from "./Teacher";
 
 export interface ISchedules {
   id: number;
@@ -8,9 +7,10 @@ export interface ISchedules {
   classroom_id: number;
   room: string;
   subject_id: number;
-  subject: ISubject[];
+  subject:{
+    name: ISubject[];
+  };
   classroom: IClassroom[];
-  teacher: ITeacher[];
   day: string;
   start_time: string;
   end_time: string;
