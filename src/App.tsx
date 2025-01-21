@@ -5,6 +5,7 @@ import ClassPage from "./pages/ClassPage";
 import SchedulePage from "./pages/SchedulePage";
 import TeacherPage from "./pages/TeacherPage";
 import ProfilePage from "./pages/Profile";
+import ProfileEditPage from "./pages/ProfileEdit";
 import HelpPage from "./pages/HelpPage";
 import SettingsPage from "./pages/SettingsPage";
 import AddTaskPage from "./pages/AddTaskPage";
@@ -22,6 +23,7 @@ function App() {
             <Route path="/teacher" element={<TeacherPage />} />
             <Route path="/addtask" element={<AddTaskPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profileEdit" element={<ProfileEditPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="login" element={<LoginPage />} />
