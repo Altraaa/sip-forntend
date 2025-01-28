@@ -1,91 +1,92 @@
-import React, { useState } from "react";
-import { ApiAuth } from "@/utils/services/Auth.service"; // Sesuaikan dengan path ke ApiAuth service
+import React from "react";
+import TextInput from "./../components/SharedCompoent/TextInput"; // Sesuaikan path dengan lokasi file TextInput
 
-const FormLayout = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+interface FormLayoutProps {
+  title?: string;
+  className?: React.ReactNode;
+  description?: string;
+  fields: {
+    name: string;
+    label: string;
+    placeholder?: string;
+    type?: "text" | "number" | "date" | "email" | "password" | "tel";
+    value?: string;
+    onChange: (value: string) => void;
+    required?: boolean;
+    startIcon?: React.ReactNode;
+    endIcon?: React.ReactNode;
+    errorMessage?: string;
+    disabled?: boolean;
+  }[];
+  onSubmit: () => Promise<void> | void;
+  buttonLabel?: string;
+  loadingLabel?: string;
+  loading?: boolean;
+  error?: string | null;
+}
 
-  const handleLogin = async (e: React.FormEvent) => {
+const FormLayout = ({
+  title = "Form",
+  className = "w-full",
+  description = "Please fill in the details below",
+  fields,
+  onSubmit,
+  buttonLabel = "Submit",
+  loadingLabel = "Submitting...",
+  loading = false,
+  error = null,
+}: FormLayoutProps) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = { email, password };
-      const response = await ApiAuth.login(data);
-
-      // Assuming the API response contains the token or user data
-      localStorage.setItem("token", response.token); // Store the token if needed
-      // Redirect or handle login success here, for example:
-      window.location.href = "/"; // Sesuaikan dengan tujuan setelah login sukses
-    } catch (err: any) {
-      setError(err.message || "Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    await onSubmit();
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Login</h2>
-          <p className="text-gray-600">
-            Welcome back, please sign in to continue
-          </p>
-        </div>
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customColor-oranye"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customColor-oranye"
-            />
-          </div>
-
-          {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full p-3 rounded-md text-white font-semibold ${
-              loading
-                ? "bg-gray-400"
-                : "bg-customColor-oranye hover:bg-orange-600"
-            }`}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+    <div className={`flex flex-col justify-center ${className}`}>
+      <div className="md:mb-6 mb-4 space-y-1 md:space-y-2">
+        <h2 className="xl:text-2xl text-lg md:text-xl font-bold text-gray-800">
+          {title}
+        </h2>
+        <p className="text-gray-600">{description}</p>
       </div>
+      <form onSubmit={handleSubmit}>
+        {fields.map((field, index) => (
+          <div className="md:mb-6 mb-4" key={index}>
+            <TextInput
+              label={field.label}
+              placeholder={field.placeholder}
+              type={field.type}
+              value={field.value}
+              onChange={field.onChange}
+              required={field.required}
+              startIcon={field.startIcon}
+              endIcon={field.endIcon}
+              errorMessage={field.errorMessage}
+              disabled={field.disabled}
+              className="w-full"
+            />
+          </div>
+        ))}
+
+        {/* General Error Message */}
+        {error && (
+          <div className="text-red-500 text-sm mb-4">
+            <span>{error}</span>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full md:p-3 py-2 rounded-md text-white text-sm md:text-base font-semibold ${
+            loading
+              ? "bg-gray-400"
+              : "bg-customColor-blue transition-all ease-out hover:bg-customColor-darkBlue"
+          }`}
+        >
+          {loading ? loadingLabel : buttonLabel}
+        </button>
+      </form>
     </div>
   );
 };
