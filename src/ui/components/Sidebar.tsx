@@ -23,7 +23,7 @@ interface SidebarContextType {
 
 // Data menu untuk sidebar
 const menuItems = [
-  { icon: <LayoutDashboard size={20} />, text: "Dashboard", link: "/" },
+  { icon: <LayoutDashboard size={20} />, text: "Dashboard", link: "/dashboard" },
   {
     icon: <Layers3 size={20} />,
     text: "Class",
@@ -136,6 +136,7 @@ const SidebarItem = ({
         to={hasDropdown ? "#" : link}
         onClick={toggleDropdown}
         className={hasDropdown ? "cursor-pointer" : ""}
+        onMouseEnter={(e) => e.stopPropagation()}
       >
         <li
           className={`
@@ -192,6 +193,7 @@ const SidebarItem = ({
             key={item.link}
             to={item.link}
             onClick={(e) => e.stopPropagation()}
+            onMouseEnter={(e) => e.stopPropagation()}
           >
             <div
               className={`
