@@ -10,6 +10,7 @@ import HelpPage from "./pages/HelpPage";
 import SettingsPage from "./pages/SettingsPage";
 import AddTaskPage from "./pages/AddTaskPage";
 import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./utils/routes/ProtectedRoutes";
 
 function App() {
   return (
@@ -17,16 +18,79 @@ function App() {
       <SidebarProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/class" element={<ClassPage />} />
-            <Route path="/schedule" element={<SchedulePage />} />
-            <Route path="/teacher" element={<TeacherPage />} />
-            <Route path="/addtask" element={<AddTaskPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/profileEdit" element={<ProfileEditPage />} />
-            <Route path="/help" element={<HelpPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="login" element={<LoginPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/class"
+              element={
+                <ProtectedRoute>
+                  <ClassPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schedule"
+              element={
+                <ProtectedRoute>
+                  <SchedulePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher"
+              element={
+                <ProtectedRoute>
+                  <TeacherPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/addtask"
+              element={
+                <ProtectedRoute>
+                  <AddTaskPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profileEdit"
+              element={
+                <ProtectedRoute>
+                  <ProfileEditPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <ProtectedRoute>
+                  <HelpPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<LoginPage />} />
           </Routes>
         </Router>
       </SidebarProvider>
