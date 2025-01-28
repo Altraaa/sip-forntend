@@ -1,7 +1,9 @@
+import { ISchedules } from "@/utils/models/Schedules";
 import { useState, useEffect } from "react";
 
 interface CalendarProps {
   isSidebarExpanded?: boolean;
+  schedules: ISchedules[];
 }
 
 const Calendar = ({ isSidebarExpanded }: CalendarProps) => {

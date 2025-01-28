@@ -34,6 +34,17 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === "ECONNABORTED") {
+      console.error("Request timed out");
+      return Promise.reject(new Error("Request timed out. Please try again."));
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const ApiRequest = async ({
   url,
   method = "GET",
@@ -62,8 +73,14 @@ export const ApiRequest = async ({
     };
 
     const response = await axiosInstance.request(config);
+
+    if (!response || !response.data) {
+      throw new Error("Invalid API response: No data returned.");
+    }
+
     return response.data;
   } catch (error: any) {
+    console.error("API Request Error:", error);
     const message = error.response?.data?.message || error.message;
     throw new Error(message);
   }
