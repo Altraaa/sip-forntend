@@ -110,7 +110,8 @@ const ViewDashboard = () => {
       <HeroSection />
       <div className="w-full mt-12 md:mt-16 flex flex-col xl:grid xl:grid-cols-[2fr_1fr] justify-between gap-10">
         <div className="flex flex-col justify-between gap-10 md:gap-0">
-          <div className="flex flex-col md:flex-row md:gap-10 gap-6 ">
+          <div className="font-semibold text-3xl">On Going</div>
+          <div className="flex flex-col md:flex-row md:gap-10 gap-6">
             <Card
               title={todayData.subject || "No Data"}
               desc={`${formatTime(todayData.startTime)} - ${formatTime(
@@ -120,7 +121,7 @@ const ViewDashboard = () => {
               iconClassName="bg-customColor-coldBlue text-white"
               color="primary"
               variant="contained"
-              className="md:w-1/2 w-full"
+              className="md:w-1/2 w-full !justify-start !pl-6 !gap-x-6 xl:pl-0 xl:gap-x-0"
             />
             <Card
               title={todayData.teacher || "No Data"}
@@ -129,17 +130,20 @@ const ViewDashboard = () => {
               iconClassName="bg-customColor-lightOranye text-white"
               color="third"
               variant="outlined"
-              className="md:w-1/2 w-full"
+              className="md:w-1/2 w-full !justify-start !pl-6 !gap-x-6 xl:pl-0 xl:gap-x-0"
             />
           </div>
           <StatisticsSection />
         </div>
         <div className="md:flex flex-col">
+
+        <div className="font-semibold text-3xl mb-5 2xl:ml-9">Calendar</div>
           <Calendar schedules={schedules} />
         </div>
       </div>
     </MainLayout>
   );
 };
+
 
 export default ViewDashboard;
