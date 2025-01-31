@@ -45,7 +45,7 @@ const TextInput = ({
           id={id}
           name={name}
           type={type === "password" && isPasswordVisible ? "text" : type}
-          className={`w-full rounded-3xl md:px-6 md:py-4 px-4 py-3 text-xs md:text-sm outline-none ${className}`}
+          className={`w-full rounded-2xl md:px-6 md:py-4 px-4 py-3 text-xs md:text-sm outline-none ${className}`}
           placeholder={placeholder}
           value={value}
           onChange={(e) => {

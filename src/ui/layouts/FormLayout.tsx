@@ -1,23 +1,35 @@
 import React from "react";
-import TextInput from "./../components/SharedCompoent/TextInput"; // Sesuaikan path dengan lokasi file TextInput
+import TextInput from "../components/SharedCompoent/TextInput";
+import Dropdown from "../components/SharedCompoent/Dropdown"; // Komponen Dropdown universal
 
 interface FormLayoutProps {
   title?: string;
   className?: React.ReactNode;
   description?: string;
-  fields: {
-    name: string;
-    label: string;
-    placeholder?: string;
-    type?: "text" | "number" | "date" | "email" | "password" | "tel";
-    value?: string;
-    onChange: (value: string) => void;
-    required?: boolean;
-    startIcon?: React.ReactNode;
-    endIcon?: React.ReactNode;
-    errorMessage?: string;
-    disabled?: boolean;
-  }[];
+  fields: (
+    | {
+        type: "text" | "number" | "date" | "email" | "password" | "tel";
+        name?: string;
+        label: string;
+        placeholder?: string;
+        value?: string;
+        onChange: (value: string) => void;
+        required?: boolean;
+        startIcon?: React.ReactNode;
+        endIcon?: React.ReactNode;
+        errorMessage?: string;
+        disabled?: boolean;
+      }
+    | {
+        type: "dropdown";
+        label: string;
+        options: { id: string | number; name: string }[];
+        value: string | number | null;
+        onChange: (id: string | number) => void;
+        required?: boolean;
+        placeholder?: string;
+      }
+  )[];
   onSubmit: () => Promise<void> | void;
   buttonLabel?: string;
   loadingLabel?: string;
@@ -52,19 +64,35 @@ const FormLayout = ({
       <form onSubmit={handleSubmit}>
         {fields.map((field, index) => (
           <div className="md:mb-6 mb-4" key={index}>
-            <TextInput
-              label={field.label}
-              placeholder={field.placeholder}
-              type={field.type}
-              value={field.value}
-              onChange={field.onChange}
-              required={field.required}
-              startIcon={field.startIcon}
-              endIcon={field.endIcon}
-              errorMessage={field.errorMessage}
-              disabled={field.disabled}
-              className="w-full"
-            />
+            {/* Kondisi untuk Dropdown */}
+            {field.type === "dropdown" ? (
+              <>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {field.label}{" "}
+                  {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <Dropdown
+                  options={field.options}
+                  selectedValue={field.value}
+                  onChange={field.onChange}
+                  placeholder={field.placeholder || "Select an option"}
+                />
+              </>
+            ) : (
+              <TextInput
+                label={field.label}
+                placeholder={field.placeholder}
+                type={field.type}
+                value={field.value}
+                onChange={field.onChange}
+                required={field.required}
+                startIcon={field.startIcon}
+                endIcon={field.endIcon}
+                errorMessage={field.errorMessage}
+                disabled={field.disabled}
+                className="w-full"
+              />
+            )}
           </div>
         ))}
 
