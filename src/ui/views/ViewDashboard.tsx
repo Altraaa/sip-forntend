@@ -93,7 +93,7 @@ const ViewDashboard = () => {
 
   const StatisticsSection = () => (
     <div className="space-y-4">
-      <h1 className="md:text-2xl text-lg font-semibold">Today's Data</h1>
+      <h1 className="md:text-3xl text-lg font-semibold">Today's Data</h1>
       <div className="flex justify-between items-baseline border-b-2 border-b-customColor-lightBlue">
         <h2 className="md:text-2xl text-lg font-medium">Total Subjects:</h2>
         <span className="md:text-8xl text-6xl">{todayData.totalSubjects}</span>
@@ -109,9 +109,11 @@ const ViewDashboard = () => {
     <MainLayout title="Dashboard">
       <HeroSection />
       <div className="w-full mt-12 md:mt-16 flex flex-col xl:grid xl:grid-cols-[2fr_1fr] justify-between gap-10">
-        <div className="flex flex-col justify-between gap-10 md:gap-0">
-          <div className="font-semibold text-3xl">On Going</div>
-          <div className="flex flex-col md:flex-row md:gap-10 gap-6">
+        <div className="flex flex-col justify-between gap-5 md:gap-2 xl:gap-8">
+          <div className="font-semibold text-xl md:text-3xl md:mb-5 xl:mb-0">
+            On Going
+          </div>
+          <div className="flex flex-col md:flex-row md:gap-10 gap-6 mb-5 md:mb-10 xl:mb-0">
             <Card
               title={todayData.subject || "No Data"}
               desc={`${formatTime(todayData.startTime)} - ${formatTime(
@@ -136,9 +138,12 @@ const ViewDashboard = () => {
           <StatisticsSection />
         </div>
         <div className="md:flex flex-col">
-
-        <div className="font-semibold text-3xl mb-5 2xl:ml-9">Calendar</div>
-          <Calendar schedules={schedules} />
+          <div>
+            <h1 className="md:text-3xl text-xl font-semibold mb-5 ">Schedule</h1>
+            <div className="w-full">
+              <Calendar schedules={schedules} />
+            </div>
+          </div>
         </div>
       </div>
     </MainLayout>

@@ -151,7 +151,7 @@ const Calendar = ({ isSidebarExpanded }: CalendarProps) => {
       bg-white rounded-3xl shadow-xl border-2 transition-all duration-300
       ${
         isCompact
-          ? "max-w-[90%] md:max-w-[100%] lg:max-w-[100%]"
+          ? "max-w-[100%] md:max-w-[90%] lg:max-w-[65%] xl:max-w-[100%]"
           : "max-w-[75%] lg:max-w-[50%] xl:max-w-[60%] 2xl:max-w-[100%]"
       }
       mx-auto md:p-8 p-4 space-y-6

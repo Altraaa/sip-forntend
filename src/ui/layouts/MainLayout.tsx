@@ -230,7 +230,7 @@ const Header = ({
   const unreadNotifications = notifications.filter(n => !n.isRead).length;
 
   return (    
-    <header className="w-full md:p-4 md:py-6 md:px-10 xl:px-12 2xl:px-24 md:pt-6 py-3 p-2">
+    <header className="w-full md:p-4 md:py-6 md:px-10 xl:px-12 2xl:px-24 md:pt-6 py-3 px-2">
       {showMobileSearch && (
         <div className="absolute top-0 left-0 right-0 bg-white z-50 p-2 md:hidden shadow-lg">
           <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-2">
