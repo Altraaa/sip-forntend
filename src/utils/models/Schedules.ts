@@ -8,15 +8,10 @@ export interface ISchedules {
   classroom_id: number;
   room: string;
   subject_id: number;
-  subject:{
-    name: ISubject;
-  };
+  subject: ISubject;
   classroom: IClassroom[];
   teacher_id: number;
-  teacher:{
-    name: ITeacher;
-    nip: ITeacher;
-  };
+  teacher: ITeacher;
   day: string;
   start_time: string;
   end_time: string;
