@@ -383,6 +383,8 @@ const Sidebar = () => {
         message="Are you sure you want to log out?"
         onClose={handleClosePopUp}
         onConfirm={handleLogout}
+        confirmText="Logout"
+        cancelText="Cancel"
       />
     </>
   );
