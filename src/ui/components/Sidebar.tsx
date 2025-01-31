@@ -15,15 +15,20 @@ import {
 import Avatars from "../../assets/images/dummyAvatar.png";
 import { createContext, useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ApiAuth } from "../../utils/services/Auth.service";
+import PopUp from "./SharedCompoent/PopUp";
 
 interface SidebarContextType {
   expanded: boolean;
   toggleSidebar: () => void;
 }
 
-// Data menu untuk sidebar
 const menuItems = [
-  { icon: <LayoutDashboard size={20} />, text: "Dashboard", link: "/dashboard" },
+  {
+    icon: <LayoutDashboard size={20} />,
+    text: "Dashboard",
+    link: "/dashboard",
+  },
   {
     icon: <Layers3 size={20} />,
     text: "Class",
@@ -31,11 +36,7 @@ const menuItems = [
     alert: true,
     hasDropdown: true,
     dropdownItems: [
-      {
-        icon: <BookOpen size={20} />,
-        text: "Class Detail",
-        link: "/class",
-      },
+      { icon: <BookOpen size={20} />, text: "Class Detail", link: "/class" },
       { icon: <Calendar size={20} />, text: "Schedule", link: "/schedule" },
       { icon: <ListTodo size={20} />, text: "Add Task", link: "/addtask" },
     ],
@@ -93,7 +94,6 @@ const SidebarItem = ({
   const { expanded } = useContext(SidebarContext);
   const location = useLocation();
 
-  // Gunakan localStorage untuk menyimpan state dropdown
   const [isOpen, setIsOpen] = useState(() => {
     if (hasDropdown) {
       const savedState = localStorage.getItem("dropdownState");
@@ -102,14 +102,12 @@ const SidebarItem = ({
     return false;
   });
 
-  // Update localStorage saat dropdown state berubah
   useEffect(() => {
     if (hasDropdown) {
       localStorage.setItem("dropdownState", isOpen.toString());
     }
   }, [isOpen, hasDropdown]);
 
-  // Reset dropdown hanya saat sidebar collapse
   useEffect(() => {
     if (expanded) {
       setIsOpen(false);
@@ -124,7 +122,6 @@ const SidebarItem = ({
     }
   };
 
-  // Cek apakah item ini atau salah satu dari dropdown itemnya aktif
   const isActiveItem =
     active ||
     (hasDropdown &&
@@ -176,7 +173,6 @@ const SidebarItem = ({
         </li>
       </Link>
 
-      {/* Dropdown Items */}
       <div
         className={`
           overflow-hidden transition-all duration-300 ease-in-out
@@ -222,9 +218,32 @@ const Sidebar = () => {
   const { expanded, toggleSidebar } = useSidebar();
   const location = useLocation();
 
+  // State to control popup visibility
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  // Open PopUp when logout button is clicked
+  const handleLogoutClick = () => {
+    setIsPopUpOpen(true); // Show confirmation pop-up
+  };
+
+  // Logout after confirmation
+  const handleLogout = async () => {
+    try {
+      await ApiAuth.logout();
+      localStorage.removeItem("token");
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  // Close PopUp
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false); // Close confirmation pop-up
+  };
+
   return (
     <>
-      {/* Overlay untuk mobile */}
       <div
         className={`fixed inset-0 bg-black/30 z-40 transition-opacity md:hidden ${
           expanded ? "opacity-100 visible" : "opacity-0 invisible"
@@ -232,14 +251,12 @@ const Sidebar = () => {
         onClick={toggleSidebar}
       />
 
-      {/* Desktop Sidebar */}
       <aside
         className={`hidden fixed md:relative z-50 md:z-0 bg-white flex-col border-r-2 shadow-2xl h-screen md:flex rounded-r-2xl transition-all ${
-          expanded ? "w-16" : "w-80"
+          expanded ? "w-[70px]" : "w-80"
         }`}
       >
         <nav className="flex flex-col h-full relative">
-          {/* Fixed Header */}
           <div className="sticky top-0 z-10 bg-white">
             <div className="p-4 flex justify-between items-center rounded-r-2xl bg-customColor-blue">
               <img
@@ -264,7 +281,6 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* Scrollable Menu Area */}
           <div className="flex-1 overflow-y-auto scrollbar-none px-3 py-2">
             <ul className="flex flex-col space-y-2">
               {menuItems.map((item) => (
@@ -284,42 +300,33 @@ const Sidebar = () => {
             </ul>
           </div>
 
-          {/* Fixed Footer */}
-          <div className="sticky bottom-0 bg-white border-t mt-auto">
-            <div className="p-3 px-4 flex items-center">
-              <img src={Avatars} alt="User Avatar" className="rounded-md w-7" />
-              <div
-                className={`flex justify-between items-center w-full ml-3 ${
-                  expanded ? "md:hidden" : "flex"
-                }`}
+          {/* Tombol logout */}
+          <div className="flex items-center justify-between gap-3 py-2 px-3">
+            <button
+              onClick={handleLogoutClick}
+              className="flex gap-3 items-center w-full hover:bg-red-50 text-red-600 rounded-md px-2 py-2.5"
+            >
+              <LogOut size={20} />
+              <span
+                className={`${
+                  expanded ? "hidden" : ""
+                } transition-all duration-300`}
               >
-                <div className="flex flex-col">
-                  <h4 className="font-semibold text-sm">John De</h4>
-                  <span className="text-xs text-gray-400">
-                    johnde@gmail.com
-                  </span>
-                </div>
-                <button
-                  className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-                  aria-label="Logout"
-                >
-                  <LogOut size={20} />
-                </button>
-              </div>
-            </div>
+                Logout
+              </span>
+            </button>
           </div>
         </nav>
       </aside>
 
-      {/* Mobile Sidebar - Gunakan struktur yang sama */}
+      {/* Sidebar Mobile */}
       <aside
         className={`fixed md:hidden flex flex-col z-50 w-64 bg-white shadow-xl h-full rounded-r-2xl transition-transform duration-300 ${
           expanded ? "-translate-x-0" : "-translate-x-full"
         }`}
       >
         <nav className="flex flex-col h-full relative">
-          {/* Fixed Header */}
-          <div className="sticky top-0 z-10 bg-white">
+          <div className="sticky top-0 z-10 bg-white rounded-r-2xl">
             <div className="p-4 flex justify-between items-center rounded-r-2xl bg-customColor-blue">
               <img src={Avatars} className="w-8" alt="Skensa Logo" />
               <button
@@ -332,7 +339,6 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* Scrollable Menu Area */}
           <div className="flex-1 overflow-y-auto scrollbar-none px-3 py-2">
             <ul className="flex flex-col space-y-2">
               {menuItems.map((item) => (
@@ -352,28 +358,32 @@ const Sidebar = () => {
             </ul>
           </div>
 
-          {/* Fixed Footer */}
-          <div className="sticky bottom-0 bg-white border-t mt-auto">
-            <div className="p-3 px-4 flex items-center">
-              <img src={Avatars} alt="User Avatar" className="rounded-md w-7" />
-              <div className="flex justify-between items-center w-full ml-3">
-                <div className="flex flex-col">
-                  <h4 className="font-semibold text-sm">John De</h4>
-                  <span className="text-xs text-gray-400">
-                    johnde@gmail.com
-                  </span>
-                </div>
-                <button
-                  className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-                  aria-label="Logout"
-                >
-                  <LogOut size={20} />
-                </button>
-              </div>
-            </div>
+          <div className="flex items-center justify-between gap-3 py-2 px-3">
+            <button
+              onClick={handleLogoutClick}
+              className="flex gap-3 items-center w-full hover:bg-red-50 text-red-600 rounded-md px-2 py-2.5"
+            >
+              <LogOut size={20} />
+              <span
+                className={`${
+                  expanded ? "" : "hidden"
+                } transition-all duration-300`}
+              >
+                Logout
+              </span>
+            </button>
           </div>
         </nav>
       </aside>
+
+      {/* PopUp Konfirmasi Logout */}
+      <PopUp
+        isOpen={isPopUpOpen}
+        title="Exit the site"
+        message="Are you sure you want to log out?"
+        onClose={handleClosePopUp}
+        onConfirm={handleLogout}
+      />
     </>
   );
 };

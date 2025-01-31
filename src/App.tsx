@@ -90,7 +90,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<LoginPage />} />
+            <Route
+              path="/login"
+              element={
+                <ProtectedRoute restricted={true}>
+                  <LoginPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Router>
       </SidebarProvider>
