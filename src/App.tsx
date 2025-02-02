@@ -8,7 +8,7 @@ import ProfilePage from "./pages/Profile";
 import ProfileEditPage from "./pages/ProfileEdit";
 import HelpPage from "./pages/HelpPage";
 import SettingsPage from "./pages/SettingsPage";
-import AddTaskPage from "./pages/AddTaskPage";
+import ListTaskPage from "./pages/ListTaskPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./utils/routes/ProtectedRoutes";
 
@@ -51,10 +51,10 @@ function App() {
               }
             />
             <Route
-              path="/addtask"
+              path="/task"
               element={
                 <ProtectedRoute>
-                  <AddTaskPage />
+                  <ListTaskPage />
                 </ProtectedRoute>
               }
             />

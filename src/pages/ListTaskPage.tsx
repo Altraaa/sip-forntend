@@ -1,5 +1,5 @@
 import ViewTask from "../ui/views/Task/ViewTask";
 
-export default function TaskPage() {
+export default function ListTaskPage() {
   return <ViewTask />;
 }

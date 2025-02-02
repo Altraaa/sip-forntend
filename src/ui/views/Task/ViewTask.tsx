@@ -3,8 +3,8 @@ import MainLayout from "../../layouts/MainLayout";
 const ViewTask = () => {
   return (
     <>
-      <MainLayout title="Add Task">
-        <h2>Ini Adalah AddTASK</h2>
+      <MainLayout title="List Tasks">
+        <h2>Ini Adalah</h2>
       </MainLayout>
     </>
   );
