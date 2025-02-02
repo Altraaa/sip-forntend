@@ -16,7 +16,7 @@ import Avatars from "../../assets/images/dummyAvatar.png";
 import { createContext, useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ApiAuth } from "../../utils/services/Auth.service";
-import PopUp from "./SharedCompoent/PopUp";
+import ModalConfirmation from "./SharedCompoent/ModalConfirmation";
 
 interface SidebarContextType {
   expanded: boolean;
@@ -38,7 +38,7 @@ const menuItems = [
     dropdownItems: [
       { icon: <BookOpen size={20} />, text: "Class Detail", link: "/class" },
       { icon: <Calendar size={20} />, text: "Schedule", link: "/schedule" },
-      { icon: <ListTodo size={20} />, text: "Add Task", link: "/addtask" },
+      { icon: <ListTodo size={20} />, text: "List Task", link: "/task" },
     ],
   },
   { icon: <GraduationCap size={20} />, text: "Teacher", link: "/teacher" },
@@ -377,7 +377,7 @@ const Sidebar = () => {
       </aside>
 
       {/* PopUp Konfirmasi Logout */}
-      <PopUp
+      <ModalConfirmation
         isOpen={isPopUpOpen}
         title="Exit the site"
         message="Are you sure you want to log out?"
