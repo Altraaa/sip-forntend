@@ -4,6 +4,9 @@ interface DropdownProps {
   onChange: (id: string | number) => void;
   placeholder?: string;
   className?: string;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const Dropdown = ({
@@ -12,23 +15,31 @@ const Dropdown = ({
   className,
   onChange,
   placeholder,
+  startIcon,
+  endIcon,
+  disabled = false,
 }: DropdownProps) => {
   return (
     <div className={`relative ${className}`}>
-      <select
-        className="w-full rounded-2xl border border-gray-400 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-customColor-blue"
-        value={selectedValue || ""}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
+      <div className="flex items-center border border-gray-400 rounded-2xl p-3 text-sm">
+        {startIcon && <span className="mr-2">{startIcon}</span>}{" "}
+        <select
+          className="w-full outline-none"
+          value={selectedValue || ""}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+        >
+          <option value="" disabled>
+            {placeholder}
           </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {endIcon && <span className="ml-2">{endIcon}</span>}
+      </div>
     </div>
   );
 };
