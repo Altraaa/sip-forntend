@@ -1,6 +1,7 @@
 import React from "react";
 import TextInput from "../components/SharedCompoent/TextInput";
-import Dropdown from "../components/SharedCompoent/Dropdown"; // Komponen Dropdown universal
+import Dropdown from "../components/SharedCompoent/Dropdown";
+import TextArea from "../components/SharedCompoent/TextArea";
 
 interface FormLayoutProps {
   title?: string;
@@ -28,6 +29,17 @@ interface FormLayoutProps {
         onChange: (id: string | number) => void;
         required?: boolean;
         placeholder?: string;
+      }
+    | {
+        type: "textarea";
+        label: string;
+        placeholder?: string;
+        value?: string;
+        onChange: (value: string) => void;
+        required?: boolean;
+        rows?: number;
+        errorMessage?: string;
+        disabled?: boolean;
       }
   )[];
   onSubmit: () => Promise<void> | void;
@@ -64,7 +76,6 @@ const FormLayout = ({
       <form onSubmit={handleSubmit}>
         {fields.map((field, index) => (
           <div className="md:mb-6 mb-4" key={index}>
-            {/* Kondisi untuk Dropdown */}
             {field.type === "dropdown" ? (
               <>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -78,6 +89,18 @@ const FormLayout = ({
                   placeholder={field.placeholder || "Select an option"}
                 />
               </>
+            ) : field.type === "textarea" ? (
+              <TextArea
+                label={field.label}
+                placeholder={field.placeholder}
+                value={field.value}
+                onChange={field.onChange}
+                required={field.required}
+                rows={field.rows}
+                errorMessage={field.errorMessage}
+                disabled={field.disabled}
+                className="w-full"
+              />
             ) : (
               <TextInput
                 label={field.label}
@@ -96,7 +119,6 @@ const FormLayout = ({
           </div>
         ))}
 
-        {/* General Error Message */}
         {error && (
           <div className="text-red-500 text-sm mb-4">
             <span>{error}</span>

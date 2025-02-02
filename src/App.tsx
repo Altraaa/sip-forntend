@@ -11,6 +11,7 @@ import SettingsPage from "./pages/SettingsPage";
 import ListTaskPage from "./pages/ListTaskPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./utils/routes/ProtectedRoutes";
+import AddTaskPage from "./pages/AddTaskPage";
 
 function App() {
   return (
@@ -55,6 +56,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ListTaskPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/addtask"
+              element={
+                <ProtectedRoute>
+                  <AddTaskPage />
                 </ProtectedRoute>
               }
             />

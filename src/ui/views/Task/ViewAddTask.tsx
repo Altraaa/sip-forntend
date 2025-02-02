@@ -2,7 +2,7 @@ import { useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import FormLayout from "../../layouts/FormLayout";
 
-const ViewTask = () => {
+const ViewAddTask = () => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [selectedSubject, setSelectedSubject] = useState<
@@ -88,7 +88,8 @@ const ViewTask = () => {
               {
                 label: "Task Description",
                 placeholder: "Enter task description",
-                type: "text",
+                type: "textarea",
+                rows: 4,
                 value: taskDescription,
                 onChange: setTaskDescription,
                 required: true,
@@ -104,4 +105,4 @@ const ViewTask = () => {
   );
 };
 
-export default ViewTask;
+export default ViewAddTask;
