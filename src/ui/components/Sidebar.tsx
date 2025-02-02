@@ -1,5 +1,7 @@
+import { useState, useEffect, createContext, useContext } from "react";
 import {
   ChevronLeft,
+  ChevronDown,
   LogOut,
   CircleHelp,
   GraduationCap,
@@ -8,20 +10,36 @@ import {
   Settings,
   Calendar,
   User,
-  ChevronDown,
   ListTodo,
   BookOpen,
 } from "lucide-react";
-import Avatars from "../../assets/images/dummyAvatar.png";
-import { createContext, useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ApiAuth } from "../../utils/services/Auth.service";
 import ModalConfirmation from "./SharedCompoent/ModalConfirmation";
+import Avatars from "../../assets/images/dummyAvatar.png";
 
-interface SidebarContextType {
-  expanded: boolean;
-  toggleSidebar: () => void;
-}
+
+const SidebarContext = createContext({
+  expanded: false,
+  toggleSidebar: () => {},
+});
+
+export const useSidebar = () => useContext(SidebarContext);
+
+export const SidebarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const toggleSidebar = () => setExpanded((prev) => !prev);
+
+  return (
+    <SidebarContext.Provider value={{ expanded, toggleSidebar }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+};
 
 const menuItems = [
   {
@@ -52,28 +70,6 @@ const menuItems = [
   { icon: <CircleHelp size={20} />, text: "Help", link: "/help" },
 ];
 
-const SidebarContext = createContext<SidebarContextType>({
-  expanded: false,
-  toggleSidebar: () => {},
-});
-
-export const useSidebar = () => useContext(SidebarContext);
-
-export const SidebarProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [expanded, setExpanded] = useState(false);
-  const toggleSidebar = () => setExpanded((prev) => !prev);
-
-  return (
-    <SidebarContext.Provider value={{ expanded, toggleSidebar }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
-
 const SidebarItem = ({
   icon,
   text,
@@ -93,7 +89,6 @@ const SidebarItem = ({
 }) => {
   const { expanded } = useContext(SidebarContext);
   const location = useLocation();
-
   const [isOpen, setIsOpen] = useState(() => {
     if (hasDropdown) {
       const savedState = localStorage.getItem("dropdownState");
@@ -108,24 +103,17 @@ const SidebarItem = ({
     }
   }, [isOpen, hasDropdown]);
 
-  useEffect(() => {
-    if (expanded) {
-      setIsOpen(false);
-      localStorage.setItem("dropdownState", "false");
-    }
-  }, [expanded]);
-
+  // Menghapus efek `expanded` terhadap dropdown
   const toggleDropdown = (e: React.MouseEvent) => {
     if (hasDropdown) {
       e.preventDefault();
-      setIsOpen(!isOpen);
+      setIsOpen((prev) => !prev);
     }
   };
 
   const isActiveItem =
     active ||
-    (hasDropdown &&
-      dropdownItems?.some((item) => item.link === location.pathname));
+    (hasDropdown && dropdownItems?.some((item) => item.link === location.pathname));
 
   return (
     <div>
@@ -133,18 +121,14 @@ const SidebarItem = ({
         to={hasDropdown ? "#" : link}
         onClick={toggleDropdown}
         className={hasDropdown ? "cursor-pointer" : ""}
-        onMouseEnter={(e) => e.stopPropagation()}
       >
         <li
-          className={`
-            relative flex items-center gap-3 py-2.5 px-3 my-0.5 font-medium rounded-md 
+          className={`relative flex items-center gap-3 py-2.5 px-3 my-0.5 font-medium rounded-md 
             transition-all duration-300 group
-            ${
-              isActiveItem
-                ? "bg-gradient-to-tr from-blue-200 to-blue-100 text-customColor-darkBlue"
-                : "hover:bg-gray-50 text-gray-700"
-            }
-          `}
+            ${isActiveItem
+              ? "bg-gradient-to-tr from-blue-200 to-blue-100 text-customColor-darkBlue"
+              : "hover:bg-gray-50 text-gray-700"
+            }`}
         >
           <div className="min-w-[20px] flex justify-center">{icon}</div>
           <span
@@ -161,7 +145,7 @@ const SidebarItem = ({
             {alert && (
               <div className="w-2 h-2 bg-customColor-lightBlue rounded-full" />
             )}
-            {hasDropdown && !expanded && (
+            {hasDropdown && (
               <ChevronDown
                 size={16}
                 className={`transition-transform duration-300 ${
@@ -173,34 +157,24 @@ const SidebarItem = ({
         </li>
       </Link>
 
+      {/* Dropdown */}
       <div
-        className={`
-          overflow-hidden transition-all duration-300 ease-in-out
-          ${hasDropdown && !expanded ? "ml-4" : ""}
-          ${
-            isOpen && !expanded
-              ? "max-h-[500px] opacity-100"
-              : "max-h-0 opacity-0"
-          }
-        `}
+        className={`overflow-hidden transition-all duration-300 ease-in-out
+          ${isOpen ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"}`}
       >
         {dropdownItems?.map((item) => (
           <Link
             key={item.link}
             to={item.link}
             onClick={(e) => e.stopPropagation()}
-            onMouseEnter={(e) => e.stopPropagation()}
           >
             <div
-              className={`
-                flex items-center gap-3 py-2.5 px-3 rounded-md text-sm
+              className={`flex items-center gap-3 py-2.5 px-3 rounded-md text-sm
                 transition-colors duration-200
-                ${
-                  location.pathname === item.link
-                    ? "bg-blue-50 text-customColor-darkBlue"
-                    : "hover:bg-gray-50 text-gray-600"
-                }
-              `}
+                ${location.pathname === item.link
+                  ? "bg-blue-50 text-customColor-darkBlue"
+                  : "hover:bg-gray-50 text-gray-600"
+                }`}
             >
               <div className="min-w-[20px] flex justify-center">
                 {item.icon}
@@ -214,6 +188,7 @@ const SidebarItem = ({
   );
 };
 
+
 const Sidebar = () => {
   const { expanded, toggleSidebar } = useSidebar();
   const location = useLocation();
@@ -221,12 +196,10 @@ const Sidebar = () => {
   // State to control popup visibility
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  // Open PopUp when logout button is clicked
   const handleLogoutClick = () => {
-    setIsPopUpOpen(true); // Show confirmation pop-up
+    setIsPopUpOpen(true);
   };
 
-  // Logout after confirmation
   const handleLogout = async () => {
     try {
       await ApiAuth.logout();
@@ -237,13 +210,13 @@ const Sidebar = () => {
     }
   };
 
-  // Close PopUp
   const handleClosePopUp = () => {
-    setIsPopUpOpen(false); // Close confirmation pop-up
+    setIsPopUpOpen(false);
   };
 
   return (
     <>
+      {/* Overlay for Mobile */}
       <div
         className={`fixed inset-0 bg-black/30 z-40 transition-opacity md:hidden ${
           expanded ? "opacity-100 visible" : "opacity-0 invisible"
@@ -251,8 +224,9 @@ const Sidebar = () => {
         onClick={toggleSidebar}
       />
 
+      {/* Desktop Sidebar */}
       <aside
-        className={`hidden fixed md:relative z-50 md:z-0 bg-white flex-col border-r-2 shadow-2xl h-screen md:flex rounded-r-2xl transition-all ${
+        className={`hidden md:flex flex-col sticky z-50 w-80 bg-white shadow-2xl h-screen border-r-2 rounded-r-2xl transition-all ${
           expanded ? "w-[70px]" : "w-80"
         }`}
       >
@@ -300,7 +274,7 @@ const Sidebar = () => {
             </ul>
           </div>
 
-          {/* Tombol logout */}
+          {/* Logout Button */}
           <div className="flex items-center justify-between gap-3 py-2 px-3">
             <button
               onClick={handleLogoutClick}
@@ -319,9 +293,9 @@ const Sidebar = () => {
         </nav>
       </aside>
 
-      {/* Sidebar Mobile */}
+      {/* Mobile Sidebar */}
       <aside
-        className={`fixed md:hidden flex flex-col z-50 w-64 bg-white shadow-xl h-full rounded-r-2xl transition-transform duration-300 ${
+        className={`md:hidden fixed z-50 w-64 bg-white shadow-xl h-full rounded-r-2xl transition-transform duration-300 ${
           expanded ? "-translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -376,7 +350,7 @@ const Sidebar = () => {
         </nav>
       </aside>
 
-      {/* PopUp Konfirmasi Logout */}
+      {/* Modal for Logout Confirmation */}
       <ModalConfirmation
         isOpen={isPopUpOpen}
         title="Exit the site"
