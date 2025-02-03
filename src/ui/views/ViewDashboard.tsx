@@ -16,6 +16,7 @@ const formatTime = (time: string | null) => {
 
 const ViewDashboard = () => {
   const [schedules, setSchedules] = useState<ISchedules[]>([]);
+  const [user, setUser] = useState<{ name: string } | null>(null);
   const [todayData, setTodayData] = useState<{
     subject: string | null;
     teacher: string | null;
@@ -33,6 +34,18 @@ const ViewDashboard = () => {
     totalSubjects: 0,
     totalTeachers: 0,
   });
+
+  const fetchUser = async () => {
+    try {
+      const response = await ApiRequest({ url: "students", method: "GET" });
+      const student = response.filter(
+        (student: any) => student.nis === localStorage.getItem("username")
+      )
+      setUser({ name: student[0].name });
+    } catch (error: any) {
+      console.error("Error fetching user:", error.message || error);
+    }
+  };
 
   const fetchSchedules = async () => {
     try {
@@ -66,6 +79,7 @@ const ViewDashboard = () => {
 
   useEffect(() => {
     fetchSchedules();
+    fetchUser();
   }, []);
 
   const HeroSection = () => (
@@ -73,7 +87,7 @@ const ViewDashboard = () => {
       <div className="lg:px-14 px-8 py-10 md:w-1/2 md:h-auto h-1/2">
         <h2 className="lg:text-3xl xl:text-4xl text-lg font-bold text-white">
           Hi,
-          <span className="text-customColor-oranye"> Aldiansah Saputra</span>
+          <span className="text-customColor-oranye"> {user?.name}</span>
         </h2>
         <p className="font-semibold lg:text-lg xl:text-xl md:text-sm text-xs text-customColor-cream">
           Welcome to S I P - SKENSA, ready to learn together?
@@ -104,6 +118,7 @@ const ViewDashboard = () => {
       </div>
     </div>
   );
+
 
   return (
     <MainLayout title="Dashboard">
