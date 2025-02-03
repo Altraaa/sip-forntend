@@ -78,7 +78,10 @@ const TeacherCard = ({
   onClick: () => void;
 }) => {
   return (
-    <Card onClick={onClick} className="text-white flex flex-col !justify-start rounded-lg shadow-md cursor-pointer">
+    <Card
+      onClick={onClick}
+      className="text-white flex flex-col !justify-start rounded-lg shadow-md cursor-pointer"
+    >
       <div className="w-20 h-20 bg-gray-300 rounded-full mb-2"></div>
       <h3 className="font-bold text-lg text-center">{teacher.name}</h3>
       <p className="text-md text-center">{`${teacher.subject?.name}`}</p>
@@ -100,6 +103,15 @@ const TeacherPopup = ({
     (s) => s.teacher_id === teacher.id && s.day === getToday()
   );
 
+  const groupedSchedule = todaySchedule.reduce((acc, curr) => {
+    if (!acc[curr.room]) {
+      acc[curr.room] = { start_time: curr.start_time, end_time: curr.end_time };
+    } else {
+      acc[curr.room].end_time = curr.end_time;
+    }
+    return acc;
+  }, {} as Record<string, { start_time: string; end_time: string }>);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-customColor-blue text-white p-6 rounded-lg shadow-lg w-80">
@@ -110,11 +122,12 @@ const TeacherPopup = ({
         </p>
 
         <p className="font-semibold mt-2">Jadwal Hari Ini:</p>
-        {todaySchedule.length > 0 ? (
+        {Object.keys(groupedSchedule).length > 0 ? (
           <ul>
-            {todaySchedule.map((item, idx) => (
+            {Object.entries(groupedSchedule).map(([room, time], idx) => (
               <li key={idx}>
-                - {item.room}, {item.start_time} - {item.end_time}
+                - {room}, {time.start_time.slice(0, 5)} -{" "}
+                {time.end_time.slice(0, 5)}
               </li>
             ))}
           </ul>
