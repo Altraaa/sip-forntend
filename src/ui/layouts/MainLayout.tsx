@@ -1,7 +1,9 @@
-import { Bell, Search, Menu, X } from "lucide-react";
+import { Bell, Search, Menu, X, User } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import { useSidebar } from "../components/Sidebar";
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
+import UserProfile from "../views/Profile/ViewProfile";
 
 interface MainLayoutProps {
   children?: React.ReactNode;
@@ -36,6 +38,56 @@ interface NotificationPopupProps {
   onDeleteOne: (id: string) => void;
   onDeleteAll: () => void;
 }
+
+interface UserProfile {
+  firstname: string;
+  lastname: string;
+  photo?: string;
+  class?: string;
+}
+
+const ProfileIcon = ({ user }: { user?: UserProfile }) => {
+  const [showProfile, setShowProfile] = useState(false);
+
+  return (
+    <div className="relative">
+      <button onClick={() => setShowProfile((prev) => !prev)}>
+        <img
+          src={user?.photo}
+          alt="Profile"
+          className="cursor-pointer w-10 h-10 rounded-full"
+        />
+      </button>
+
+      {showProfile && user && (
+        <div className="absolute right-0 top-10 max-w-screen-lg bg-white rounded-xl shadow-2xl border p-4 z-50">
+          <div className="flex justify-end">
+            <button onClick={() => setShowProfile(false)}>
+              <X 
+                size={18} 
+                className="text-gray-700 hover:text-gray-800 hover:bg-gray-200 rounded-full" />
+            </button>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <p className="font-semibold w-72 text-black p-2 rounded">
+            {user?.firstname || ""} {user?.lastname || ""} - {user?.class || ""}
+            </p>
+            
+          </div>
+          <hr className="my-2" />
+          <div>
+            <Link
+              className="hover:text-blue-600 text-sm hover:underline transition duration-300"
+              to="/profile"
+            >
+              See more...
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const NotificationPopup = ({ 
   onClose, 
@@ -125,12 +177,14 @@ const Header = ({
   showSearch, 
   onSearchChange, 
   searchQuery,
-  toggleSidebar 
-}: HeaderProps) => {
+  toggleSidebar,
+  user
+}: HeaderProps & { user?: UserProfile} ) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  
   
   // Data notifikasi default
   const defaultNotifications = [
@@ -293,7 +347,7 @@ const Header = ({
             </>
           )}
           
-          <div className="relative">
+          <div className="flex items-center gap-4">
             <button
               onClick={toggleNotifications}
               className="p-2 hover:bg-gray-200 rounded-full transition-all duration-300 relative"
@@ -323,6 +377,7 @@ const Header = ({
                 />
               </>
             )}
+            <ProfileIcon user={user} />
           </div>
         </div>
       </div>
@@ -346,8 +401,9 @@ const Header = ({
             )}
             <p className="text-xs text-gray-500">{selectedNotification.time}</p>
           </div>
-        </div>
+        </div>        
       )}
+
     </header>
   );
 };
@@ -361,6 +417,7 @@ const MainLayout = ({
 }: MainLayoutProps) => {
   const { toggleSidebar } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
+  const [user] = useState<UserProfile | null>(null);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -378,6 +435,7 @@ const MainLayout = ({
           onSearchChange={handleSearchChange}
           searchQuery={searchQuery}
           toggleSidebar={toggleSidebar}
+          user={user || {firstname:"", lastname:"", class:""}} 
         />
         <hr className="border border-black" />
         <div className={`md:p-4 md:px-10 xl:px-12 2xl:px-24 p-2 px-5 flex flex-col ${className}`}>

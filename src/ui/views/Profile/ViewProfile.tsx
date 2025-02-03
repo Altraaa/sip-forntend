@@ -10,6 +10,7 @@ const ViewProfile = () => {
     email: "email@gmail.com",
     phone: "+62 785237996698",
     class: "XII RPL 3",
+    photo: "src/assets/images/dummyAvatar.png",
     academicStatus: "Active",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit voluptas ipsum provident veniam nihil animi maiores iste, ratione inventore aliquam distinctio, atque non esse consectetur quibusdam at praesentium voluptatum in.",
     firstAccess: "Thursday, 28 November 2024, 7:50 AM",
@@ -24,7 +25,7 @@ const ViewProfile = () => {
         <div className="w-full md:w-1/3 bg-gray-100 p-4 rounded-medium text-center">
           <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-gray-300 mb-5 mt-4">
             <img
-              src="src/assets/images/dummyAvatar.png" 
+              src={user.photo} 
               alt="Profile"
               className="w-full h-full object-cover"
             />
