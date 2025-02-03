@@ -18,7 +18,6 @@ import { ApiAuth } from "../../utils/services/Auth.service";
 import ModalConfirmation from "./SharedCompoent/ModalConfirmation";
 import Avatars from "../../assets/images/dummyAvatar.png";
 
-
 const SidebarContext = createContext({
   expanded: false,
   toggleSidebar: () => {},
@@ -113,7 +112,8 @@ const SidebarItem = ({
 
   const isActiveItem =
     active ||
-    (hasDropdown && dropdownItems?.some((item) => item.link === location.pathname));
+    (hasDropdown &&
+      dropdownItems?.some((item) => item.link === location.pathname));
 
   return (
     <div>
@@ -125,9 +125,10 @@ const SidebarItem = ({
         <li
           className={`relative flex items-center gap-3 py-2.5 px-3 my-0.5 font-medium rounded-md 
             transition-all duration-300 group
-            ${isActiveItem
-              ? "bg-gradient-to-tr from-blue-200 to-blue-100 text-customColor-darkBlue"
-              : "hover:bg-gray-50 text-gray-700"
+            ${
+              isActiveItem
+                ? "bg-gradient-to-tr from-blue-200 to-blue-100 text-customColor-darkBlue"
+                : "hover:bg-gray-50 text-gray-700"
             }`}
         >
           <div className="min-w-[20px] flex justify-center">{icon}</div>
@@ -171,9 +172,10 @@ const SidebarItem = ({
             <div
               className={`flex items-center gap-3 py-2.5 px-3 rounded-md text-sm
                 transition-colors duration-200
-                ${location.pathname === item.link
-                  ? "bg-blue-50 text-customColor-darkBlue"
-                  : "hover:bg-gray-50 text-gray-600"
+                ${
+                  location.pathname === item.link
+                    ? "bg-blue-50 text-customColor-darkBlue"
+                    : "hover:bg-gray-50 text-gray-600"
                 }`}
             >
               <div className="min-w-[20px] flex justify-center">
@@ -188,30 +190,19 @@ const SidebarItem = ({
   );
 };
 
-
 const Sidebar = () => {
   const { expanded, toggleSidebar } = useSidebar();
   const location = useLocation();
-
-  // State to control popup visibility
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-
-  const handleLogoutClick = () => {
-    setIsPopUpOpen(true);
-  };
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = async () => {
     try {
       await ApiAuth.logout();
       localStorage.removeItem("token");
-      window.location.reload();
+      localStorage.removeItem("username");
     } catch (error) {
-      console.error("Logout failed", error);
+      console.error("Logout error:", error);
     }
-  };
-
-  const handleClosePopUp = () => {
-    setIsPopUpOpen(false);
   };
 
   return (
@@ -231,7 +222,7 @@ const Sidebar = () => {
         }`}
       >
         <nav className="flex flex-col h-full relative">
-          <div className="sticky top-0 z-10 bg-white">
+          <div className="sticky top-0 z-10 rounded-r-2xl bg-white">
             <div className="p-4 flex justify-between items-center rounded-r-2xl bg-customColor-blue">
               <img
                 src={Avatars}
@@ -277,7 +268,7 @@ const Sidebar = () => {
           {/* Logout Button */}
           <div className="flex items-center justify-between gap-3 py-2 px-3">
             <button
-              onClick={handleLogoutClick}
+              onClick={() => setShowLogoutModal(true)}
               className="flex gap-3 items-center w-full hover:bg-red-50 text-red-600 rounded-md px-2 py-2.5"
             >
               <LogOut size={20} />
@@ -334,7 +325,7 @@ const Sidebar = () => {
 
           <div className="flex items-center justify-between gap-3 py-2 px-3">
             <button
-              onClick={handleLogoutClick}
+              onClick={() => setShowLogoutModal(true)}
               className="flex gap-3 items-center w-full hover:bg-red-50 text-red-600 rounded-md px-2 py-2.5"
             >
               <LogOut size={20} />
@@ -350,15 +341,16 @@ const Sidebar = () => {
         </nav>
       </aside>
 
-      {/* Modal for Logout Confirmation */}
       <ModalConfirmation
-        isOpen={isPopUpOpen}
-        title="Exit the site"
-        message="Are you sure you want to log out?"
-        onClose={handleClosePopUp}
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Are you sure?"
+        message="You want to logout?"
         onConfirm={handleLogout}
-        confirmText="Logout"
+        isLogout={true}
         cancelText="Cancel"
+        confirmText="Logout"
+
       />
     </>
   );

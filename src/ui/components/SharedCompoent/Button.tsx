@@ -22,7 +22,7 @@ const Button = ({
   className,
 }: ButtonProps) => {
   const containedOrange =
-    "bg-orange-800 hover:bg-orange-700 active:bg-orange-900 text-white";
+    "bg-customColor-oranye hover:bg-orange-700 active:bg-orange-900 text-white";
   const containedGray = "bg-gray-300 hover:bg-gray-400 active:bg-gray-500";
   const containedBlue =
     "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white";
@@ -32,8 +32,9 @@ const Button = ({
   const outlined = "border broder-2 bg-white";
   const outlinedOrange = `text-orange-800 
     border-2
-    border-orange-800 
-    hover:border-orange-700 
+    border-customColor-oranye 
+    hover:bg-orange-800
+    hover:text-white 
     active:border-orange-900`;
   const outlinedGray = `text-gray-500 
     border-2
@@ -43,7 +44,8 @@ const Button = ({
   const outlinedBlue = `text-blue-500 
     border-2
     border-blue-500 
-    hover:border-blue-600 
+    hover:bg-blue-600 
+    hover:text-customColor-coldBlue
     active:border-blue-700`;
   const outlinedRed = `text-red-500
     border-2

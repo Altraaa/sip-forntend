@@ -1,36 +1,43 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ApiAuth } from "@/utils/services/Auth.service"; // Sesuaikan dengan path ke ApiAuth service
+import { showModernToast } from "../components/SharedCompoent/ModernToastContainer";
 import FormLayout from "../layouts/FormLayout";
 import LoginImage from "../../assets/images/skensa.png";
 
 const ViewLogin = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
- const handleLogin = async () => {
-   setLoading(true);
-   setError(null);
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(null);
 
-   try {
-     const response = await ApiAuth.loginUser({ username, password });
-     localStorage.setItem("token", response.token);
-     localStorage.setItem("username", username);
-     window.location.href = "/dashboard";
-   } catch (err: any) {
-     // Pastikan error yang terjadi berasal dari response error dari API
-     if (err?.response?.status === 401) {
-       setError("Invalid username or password. Please try again.");
-     } else {
-       setError(
-         err.message || "An unexpected error occurred. Please try again."
-       );
-     }
-   } finally {
-     setLoading(false);
-   }
- };
+    try {
+      const response = await ApiAuth.loginUser({ username, password });
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("username", username);
+
+      // Tampilkan toast sukses
+      showModernToast.success("Login Succesfully");
+
+      // Tunggu 500ms sebelum redirect
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      navigate("/dashboard");
+    } catch (err: any) {
+      if (err?.response?.status === 401) {
+        showModernToast.error("Username atau password salah!");
+      } else {
+        showModernToast.error(err.message || "Terjadi kesalahan saat login");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const shapes = useMemo(() => {
     const generatedShapes = [];

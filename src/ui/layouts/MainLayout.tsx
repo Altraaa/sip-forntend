@@ -1,4 +1,4 @@
-import { Bell, Search, Menu, X, User } from "lucide-react";
+import { Bell, Search, Menu, X, } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import { useSidebar } from "../components/Sidebar";
 import { useState, useCallback } from "react";
