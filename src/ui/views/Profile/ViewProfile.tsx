@@ -1,9 +1,10 @@
 import {Edit} from "lucide-react";
+import { useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import { Link } from "react-router-dom";
 
 const ViewProfile = () => {
-  const user = {
+  const [user] = useState({
     firstName: "Nama",
     lastName: "Siswa",
     email: "email@gmail.com",
@@ -15,7 +16,7 @@ const ViewProfile = () => {
     lastAccess: "Friday, 10 January 2025, 1:59 PM",
     firstAccessDuration: "43 days 6 hours",
     lastAccessDuration: "10 secs",
-  };
+  });
 
   return (
     <MainLayout title="Profile">
@@ -28,7 +29,7 @@ const ViewProfile = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-semibold mb-7">NAMA SISWA</h2>
+          <h2 className="text-xl font-semibold mb-7 uppercase">{user.firstName} {user.lastName}</h2>
           <div>
             <Link
               className="mt-2 px-5 py-1 bg-customColor-darkBlue text-white rounded-lg flex items-center justify-center gap-2"
