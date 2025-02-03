@@ -114,29 +114,37 @@ const TeacherPopup = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-customColor-blue text-white p-6 rounded-lg shadow-lg w-80">
-        <h3 className="font-bold text-lg">{teacher.name}</h3>
-        <p>{`${teacher.subject?.name}`}</p>
-        <p className="mt-2">
-          <span className="font-semibold">NIP:</span> {teacher.nip || "Unknown"}
-        </p>
-
-        <p className="font-semibold mt-2">Jadwal Hari Ini:</p>
-        {Object.keys(groupedSchedule).length > 0 ? (
-          <ul>
-            {Object.entries(groupedSchedule).map(([room, time], idx) => (
-              <li key={idx}>
-                - {room}, {time.start_time.slice(0, 5)} -{" "}
-                {time.end_time.slice(0, 5)}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Tidak ada jadwal hari ini.</p>
-        )}
-
-        <p className="font-semibold mt-2">Kontak:</p>
-        <p>Belum tersedia</p>
+      <div className="bg-customColor-blue text-white py-6 px-10 rounded-lg shadow-lg w-1/2">
+        <h2 className="text-2xl font-bold mb-4">Detail Guru</h2>
+        <div className="flex">
+          <div className="flex flex-col w-1/2 justify-start items-start">
+            <p className="font-semibold">Nama Guru</p>
+            <h3 className="font-bold text-lg">{teacher.name}</h3>
+            <p className="font-semibold mt-4">Mata Pelajaran</p>
+            <p>{`${teacher.subject?.name}`}</p>
+            <p className="mt-2">
+              <span className="font-semibold">NIP:</span>{" "}
+              {teacher.nip || "Unknown"}
+            </p>
+            <p className="font-semibold mt-2">Kontak:</p>
+            <p>Belum tersedia</p>
+          </div>
+          <div className="flex flex-col w-1/2 justify-start items-start">
+            <p className="font-semibold">Jadwal Hari Ini:</p>
+            {Object.keys(groupedSchedule).length > 0 ? (
+              <ul>
+                {Object.entries(groupedSchedule).map(([room, time], idx) => (
+                  <li key={idx}>
+                    Ruangan {room} Jam {time.start_time.slice(0, 5)} -{" "}
+                    {time.end_time.slice(0, 5)}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Tidak ada jadwal hari ini.</p>
+            )}
+          </div>
+        </div>
 
         <button
           className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
