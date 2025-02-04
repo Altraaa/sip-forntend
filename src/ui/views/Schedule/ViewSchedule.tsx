@@ -4,6 +4,7 @@ import { ApiSchedules } from "../../../utils/services/Schedule.service"; // Impo
 import MainLayout from "../../layouts/MainLayout";
 import Card from "../../components/SharedCompoent/Card";
 import { useSwipeable } from "react-swipeable";
+import { ApiRequest } from "../../../utils/services/Api.service";
 
 // Time slots and days (static configuration)
 const timeSlots = [
@@ -33,6 +34,7 @@ const ViewSchedule = () => {
   const [scheduleData, setScheduleData] = useState<ISchedules[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [user, setUser] = useState<{ name: string } | null>(null);
 
   const transformScheduleData = (data: ISchedules[]) => {
     return data.map((schedule) => ({
@@ -56,9 +58,23 @@ const ViewSchedule = () => {
     }
   };
 
+const fetchUser = async () => {
+    try {
+      const response = await ApiRequest({ url: "students", method: "GET" });
+      const student = response.filter(
+        (student: any) => student.nis === localStorage.getItem("username")
+      )
+      setUser({ name: student[0].name });
+    } catch (error: any) {
+      console.error("Error fetching user:", error.message || error);
+    }
+  };
+
   useEffect(() => {
+    fetchUser();
     fetchSchedule();
   }, []);
+
 
   const groupSchedulesByDayAndTime = (): Record<string, ScheduleSlot[]> => {
     const grouped: Record<string, ScheduleSlot[]> = {};
@@ -110,7 +126,7 @@ const ViewSchedule = () => {
     <MainLayout title="Schedule" showSearch={false}>
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">
-          Hi, <span className="text-customColor-oranye">Nama</span>
+          Hi, <span className="text-customColor-oranye">{user?.name}</span>
         </h2>
         <p className="text-gray-600">This is the schedule for your class</p>
       </div>
