@@ -1,25 +1,44 @@
 import {Edit} from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { ApiRequest } from "@/utils/services/Api.service";
 
 const ViewProfile = () => {
-  const [user] = useState({
-    firstName: "Nama",
-    lastName: "Siswa",
-    email: "email@gmail.com",
-    phone: "+62 785237996698",
-    class: "XII RPL 3",
-    photo: "src/assets/images/dummyAvatar.png",
-    academicStatus: "Active",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit voluptas ipsum provident veniam nihil animi maiores iste, ratione inventore aliquam distinctio, atque non esse consectetur quibusdam at praesentium voluptatum in.",
-    firstAccess: "Thursday, 28 November 2024, 7:50 AM",
-    lastAccess: "Friday, 10 January 2025, 1:59 PM",
-    firstAccessDuration: "43 days 6 hours",
-    lastAccessDuration: "10 secs",
-  });
+
+  const [user, setUser] = useState<any>(null);
+  const [userClass, setUserClass] = useState<any>(null);
+  const [lastAccess, setLastAccess] = useState<string | null>(null);
+
+  const fetchUserClass = async () => {
+    try {
+      if (!user || !user.classroom_id) {
+        console.error("User data or classroom_id is missing.");
+        return;
+      }
+
+      const response = await ApiRequest({ url: "classrooms", method: "GET" });
+
+      const classrooms = Array.isArray(response) ? response : response?.data;
+      if (!Array.isArray(classrooms)) {
+        console.error("Invalid API response: Expected an array.");
+        return;
+      }
+
+      const foundClass = classrooms.find(
+        (classroom: any) => classroom.id === user.classroom_id
+      );
+      console.log("User Class:", foundClass);
+
+      if (foundClass) {
+        setUserClass(foundClass);
+      } else {
+        console.error("Class not found in classrooms data.");
+      }
+    } catch (error: any) {
+      console.error("Error fetching class data:", error.message || error);
+    }
+  };
 
   const getCurrentTimestamp = () => {
     const now = new Date();
@@ -79,15 +98,15 @@ const ViewProfile = () => {
   return (
     <MainLayout title="Profile">
       <div className="flex flex-col md:flex-row p-2">
-        <div className="w-full md:w-1/3 bg-gray-100 p-4 rounded-medium text-center">
-          <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-gray-300 mb-5 mt-4">
+        <div className="w-full md:w-1/3 bg-gray-50 border-2 border-customColor-darkBlue shadow-2xl rounded-lg p-4 rounded-medium text-center">
+          <div className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 mt-4">
             <img
-              src={user.photo} 
+              src="src/assets/images/dummyAvatar.png"
               alt="Profile"
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-semibold mb-7 uppercase">{user.firstName} {user.lastName}</h2>
+          <h2 className="text-xl font-semibold mb-7">{user?.name}</h2>
           <div>
             <Link
               className="mt-2 px-5 py-1 bg-customColor-darkBlue text-white rounded-lg flex items-center justify-center gap-2"
@@ -100,22 +119,7 @@ const ViewProfile = () => {
         </div>
 
         {/* Detail Information */}
-        <div className="w-full md:w-3/4 bg-gray-100 p-8 rounded-medium ml-0 md:ml-4">
-          <h2 className="text-2xl font-semibold mb-5">User Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Link
-                className="mt-2 px-5 py-2 bg-customColor-darkBlue text-white rounded-xl flex items-center justify-center gap-2"
-                to="/profile/edit"
-              >
-                <Edit size={22} />
-                Edit Profile
-              </Link>
-            </div>
-          </div>
-
-          {/* Detail Information */}
-          <div className="w-full md:w-3/4 bg-gray-50 p-8 rounded-xl shadow-lg ml-0 md:ml-4">
+          <div className="w-full md:w-3/4 bg-gray-50 border-2 border-customColor-darkBlue shadow-2xl p-8 rounded-xl ml-0 md:ml-4">
             <h2 className="text-2xl font-semibold mb-5">User Details</h2>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
@@ -145,7 +149,6 @@ const ViewProfile = () => {
             </div>
           </div>
         </div>
-      </div>
     </MainLayout>
   );
 };
