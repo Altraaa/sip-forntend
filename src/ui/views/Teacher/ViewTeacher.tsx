@@ -5,12 +5,26 @@ import MainLayout from "../../layouts/MainLayout";
 import Card from "../../components/SharedCompoent/Card";
 import { ISchedules } from "@/utils/models/Schedules";
 import { ApiSchedules } from "@/utils/services/Schedule.service";
-
+import { ApiRequest } from "../../../utils/services/Api.service";
 const ViewTeachers = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [schedules, setSchedules] = useState<ISchedules[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTeacher, setSelectedTeacher] = useState<ITeacher | null>(null);
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
+
+  const fetchUser = async () => {
+    try {
+      const response = await ApiRequest({ url: "students", method: "GET" });
+      const student = response.filter(
+        (student: any) => student.nis === localStorage.getItem("username")
+      )
+      setUser({ name: student[0].name });
+    } catch (error: any) {
+      console.error("Error fetching user:", error.message || error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,13 +41,14 @@ const ViewTeachers = () => {
     };
 
     fetchData();
+    fetchUser();
   }, []);
 
   return (
     <MainLayout title="Teachers" showSearch={false}>
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">
-          Hi, <span className="text-customColor-oranye">Nama</span>
+          Hi, <span className="text-customColor-oranye">{user?.name}</span>
         </h2>
         <p className="text-gray-600">This is the teacher page</p>
       </div>

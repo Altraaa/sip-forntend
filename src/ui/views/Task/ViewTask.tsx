@@ -3,14 +3,33 @@ import MainLayout from "../../layouts/MainLayout";
 import Button from "@/ui/components/SharedCompoent/Button";
 import { SquarePlus } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import { useState, useEffect } from "react";
+import { ApiRequest } from "../../../utils/services/Api.service";
 const ViewTask = () => {
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await ApiRequest({ url: "students", method: "GET" });
+      const student = response.filter(
+        (student: any) => student.nis === localStorage.getItem("username")
+      )
+      setUser({ name: student[0].name });
+    } catch (error: any) {
+      console.error("Error fetching user:", error.message || error);
+    }
+  };
+
+   useEffect(() => {
+      fetchUser();
+
+    }, []);
   return (
     <>
       <MainLayout title="List Tasks">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold mb-2">
-            Hi, <span className="text-customColor-oranye">Nama</span>
+            Hi, <span className="text-customColor-oranye">{user?.name}</span>
           </h2>
           <p className="text-gray-600">
             Here's the assignment you didn't finish
