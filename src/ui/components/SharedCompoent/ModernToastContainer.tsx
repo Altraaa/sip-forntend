@@ -9,14 +9,18 @@ interface Toast {
 
 const ModernToastContainer: React.FC = () => {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [removingToastId, setRemovingToastId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleToast = (event: CustomEvent<Toast>) => {
       const newToast = event.detail;
       setToasts((prev) => [...prev, newToast]);
       setTimeout(() => {
-        setToasts((prev) => prev.filter((toast) => toast.id !== newToast.id));
-      }, 3000);
+        setRemovingToastId(newToast.id); // Tandai toast untuk keluar
+        setTimeout(() => {
+          setToasts((prev) => prev.filter((toast) => toast.id !== newToast.id)); // Hapus setelah animasi selesai
+        }, 300); // Waktu animasi slide-out selesai
+      }, 3000); // Toast akan tetap terlihat selama 3 detik
     };
 
     window.addEventListener("show-toast" as any, handleToast as any);
@@ -36,7 +40,7 @@ const ModernToastContainer: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center gap-4 w-full px-4">
+    <div className="fixed w-full top-4 flex justify-center z-50 px-4">
       {toasts.map((toast) => (
         <div
           key={toast.id}
@@ -44,10 +48,16 @@ const ModernToastContainer: React.FC = () => {
             flex items-center gap-4 p-4 rounded-lg shadow-lg
             bg-white border border-gray-100
             transform transition-all duration-300 ease-in-out
-            animate-toast-slide-in max-w-lg
+            max-w-lg
             ${toast.type === "success" && "border-green-500"}
             ${toast.type === "error" && "border-red-500"}
             ${toast.type === "info" && "border-blue-500"}
+            ${
+              removingToastId === toast.id
+                ? "animate-toast-slide-out"
+                : "animate-toast-slide-in"
+            }
+
           `}
         >
           {getIcon(toast.type)}

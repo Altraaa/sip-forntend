@@ -66,28 +66,28 @@ export default {
       keyframes: {
         "toast-slide-in": {
           "0%": {
-            transform: "translate(-50%, -100%)",
-            opacity: "0",
+            transform: "translateY(-100%)",  // Mulai dari atas
+            opacity: "0",  // Transparan saat mulai
           },
           "100%": {
-            transform: "translate(-50%, 0)",
-            opacity: "1",
+            transform: "translateY(0)",  // Berhenti di tengah
+            opacity: "1",  // Toast sepenuhnya terlihat
           },
         },
         "toast-slide-out": {
           "0%": {
-            transform: "translate(-50%, 0)",
-            opacity: "1",
+            transform: "translateY(0)",  // Toast mulai di posisi normal
+            opacity: "1",  // Masih terlihat
           },
           "100%": {
-            transform: "translate(-50%, 100%)",
-            opacity: "0",
+            transform: "translateY(-100%)",  // Keluar ke bawah
+            opacity: "0",  // Menghilang
           },
         },
       },
       animation: {
-        "toast-slide-in": "toast-slide-in 0.3s ease-out forwards",
-        "toast-slide-out": "toast-slide-out 0.3s ease-in forwards",
+        "toast-slide-in": "toast-slide-in 0.3s ease-out",  // Animasi masuk
+        "toast-slide-out": "toast-slide-out 0.3s ease-in",  // Animasi keluar
       },
     },
   },
