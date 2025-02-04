@@ -1,5 +1,6 @@
 interface CardProps {
   title?: string;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   className?: string;
   color?: "primary" | "secondary" | "third" | "fourth" | "border";
   variant?: "outlined" | "contained";
@@ -12,6 +13,7 @@ interface CardProps {
 const Card = ({
   title,
   className,
+  onClick,
   color = "primary",
   variant = "contained",
   desc,
@@ -49,6 +51,7 @@ const Card = ({
 
   return (
     <div
+      onClick={onClick}
       className={`${styles.join(
         " "
       )} ${className} w-full flex gap-2 md:p-5 p-3 justify-center items-center rounded-xl shadow-xl`}
