@@ -12,6 +12,7 @@ import ListTaskPage from "./pages/ListTaskPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./utils/routes/ProtectedRoutes";
 import AddTaskPage from "./pages/AddTaskPage";
+import ModernToastContainer  from "./ui/components/SharedCompoent/ModernToastContainer";
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
           </Routes>
         </Router>
       </SidebarProvider>
+      <ModernToastContainer />
     </main>
   );
 }

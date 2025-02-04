@@ -3,6 +3,7 @@ import { ISchedules } from "../../../utils/models/Schedules"; // Import interfac
 import { ApiSchedules } from "../../../utils/services/Schedule.service"; // Import layanan API
 import MainLayout from "../../layouts/MainLayout";
 import Card from "../../components/SharedCompoent/Card";
+import { useSwipeable } from "react-swipeable";
 
 // Time slots and days (static configuration)
 const timeSlots = [
@@ -31,6 +32,7 @@ type ScheduleSlot =
 const ViewSchedule = () => {
   const [scheduleData, setScheduleData] = useState<ISchedules[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentDayIndex, setCurrentDayIndex] = useState(0);
 
   const transformScheduleData = (data: ISchedules[]) => {
     return data.map((schedule) => ({
@@ -71,8 +73,8 @@ const ViewSchedule = () => {
         if (schedule) {
           return { ...schedule, type: "schedule" };
         } else if (
-          (time === "10:10-10:30") || 
-          (time === "13:10-13:30" && day !== "Friday") 
+          time === "10:10-10:30" ||
+          (time === "13:10-13:30" && day !== "Friday")
         ) {
           return { type: "break" };
         } else if (
@@ -80,7 +82,7 @@ const ViewSchedule = () => {
           (day === "Friday" &&
             [
               "12:30-13:10",
-              "13:10-13:30", 
+              "13:10-13:30",
               "13:30-14:10",
               "14:10-14:50",
               "14:50-15:30",
@@ -96,8 +98,13 @@ const ViewSchedule = () => {
     return grouped;
   };
 
-
   const groupedSchedules = groupSchedulesByDayAndTime();
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () =>
+      setCurrentDayIndex((prev) => Math.min(prev + 1, days.length - 1)),
+    onSwipedRight: () => setCurrentDayIndex((prev) => Math.max(prev - 1, 0)),
+  });
 
   return (
     <MainLayout title="Schedule" showSearch={false}>
@@ -112,59 +119,131 @@ const ViewSchedule = () => {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="grid grid-cols-6 gap-2">
-            <div className="space-y-2">
-              <div className="h-12" />
-              {timeSlots.map((time) => (
-                <div
-                  key={time}
-                  className="h-20 flex items-center text-sm text-gray-600"
-                >
-                  {time}
+          <div>
+            <div className="hidden md:grid sm:grid-cols-4 md:grid-cols-6 gap-2">
+              <div className="space-y-2">
+                <div className="h-12" />
+                {timeSlots.map((time) => (
+                  <div
+                    key={time}
+                    className="h-20 flex items-center text-sm text-gray-600"
+                  >
+                    {time}
+                  </div>
+                ))}
+              </div>
+
+              {days.map((day) => (
+                <div key={day} className="space-y-2">
+                  <div className="h-12 flex items-center justify-center font-semibold">
+                    {day}
+                  </div>
+                  {groupedSchedules[day].map((slot, index) => (
+                    <Card
+                      key={`${day}-${index}`}
+                      className={`h-20 ${
+                        slot.type === "schedule"
+                          ? "bg-customColor-cream hover:shadow-lg cursor-pointer"
+                          : slot.type === "break"
+                          ? "bg-blue-100"
+                          : slot.type === "dismissal"
+                          ? "bg-gray-100"
+                          : "bg-gray-50"
+                      }`}
+                    >
+                      {slot.type === "schedule" ? (
+                        <div className="text-center">
+                          <h3 className="font-semibold text-sm">{`${slot.subject?.name}`}</h3>
+                          <p className="text-xs text-gray-600">{`Room: ${slot.room}`}</p>
+                        </div>
+                      ) : slot.type === "break" ? (
+                        <p className="text-gray-600 text-sm text-center">
+                          Istirahat
+                        </p>
+                      ) : slot.type === "dismissal" ? (
+                        <p className="text-gray-600 text-sm text-center">
+                          Pulang
+                        </p>
+                      ) : (
+                        <p className="text-gray-400 text-sm text-center">
+                          No schedule
+                        </p>
+                      )}
+                    </Card>
+                  ))}
                 </div>
               ))}
             </div>
 
-            {days.map((day) => (
-              <div key={day} className="space-y-2">
-                <div className="h-12 flex items-center justify-center font-semibold">
-                  {day}
-                </div>
-                {groupedSchedules[day].map((slot, index) => (
-                  <Card
-                    key={`${day}-${index}`}
-                    className={`h-20 ${
-                      slot.type === "schedule"
-                        ? "bg-customColor-cream hover:shadow-lg cursor-pointer"
-                        : slot.type === "break"
-                        ? "bg-blue-100"
-                        : slot.type === "dismissal"
-                        ? "bg-gray-100"
-                        : "bg-gray-50"
-                    }`}
-                  >
-                    {slot.type === "schedule" ? (
-                      <div className="text-center">
-                        <h3 className="font-semibold text-sm">{`${slot.subject?.name}`}</h3>
-                        <p className="text-xs text-gray-600">{`Room: ${slot.room}`}</p>
-                      </div>
-                    ) : slot.type === "break" ? (
-                      <p className="text-gray-600 text-sm text-center">
-                        Istirahat
-                      </p>
-                    ) : slot.type === "dismissal" ? (
-                      <p className="text-gray-600 text-sm text-center">
-                        Pulang
-                      </p>
-                    ) : (
-                      <p className="text-gray-400 text-sm text-center">
-                        No schedule
-                      </p>
-                    )}
-                  </Card>
-                ))}
+            {/* Mobile View */}
+            <div
+              {...handlers}
+              className="md:hidden sm:flex sm:flex-wrap flex flex-col items-center space-y-4"
+            >
+              <div className="flex justify-between w-full">
+                <button
+                  onClick={() =>
+                    setCurrentDayIndex((prev) => Math.max(prev - 1, 0))
+                  }
+                  disabled={currentDayIndex === 0}
+                  className="p-2 disabled:opacity-50"
+                >
+                  ◀
+                </button>
+                <h3 className="text-lg font-semibold">
+                  {days[currentDayIndex]}
+                </h3>
+                <button
+                  onClick={() =>
+                    setCurrentDayIndex((prev) =>
+                      Math.min(prev + 1, days.length - 1)
+                    )
+                  }
+                  disabled={currentDayIndex === days.length - 1}
+                  className="p-2 disabled:opacity-50"
+                >
+                  ▶
+                </button>
               </div>
-            ))}
+              <div className="space-y-2 w-full">
+                {timeSlots.map((time, index) => {
+                  const slot = groupedSchedules[days[currentDayIndex]][index];
+                  return (
+                    <Card
+                      key={`${days[currentDayIndex]}-${index}`}
+                      className={`h-20 ${
+                        slot.type === "schedule"
+                          ? "bg-customColor-cream hover:shadow-lg cursor-pointer"
+                          : slot.type === "break"
+                          ? "bg-blue-100"
+                          : slot.type === "dismissal"
+                          ? "bg-gray-100"
+                          : "bg-gray-50"
+                      }`}
+                    >
+                      {slot.type === "schedule" ? (
+                        <div className="text-center">
+                          <h3 className="font-semibold text-sm">{`${slot.subject?.name}`}</h3>
+                          <p className="text-xs text-gray-600">{`Room: ${slot.room}`}</p>
+                        </div>
+                      ) : slot.type === "break" ? (
+                        <p className="text-gray-600 text-sm text-center">
+                          Istirahat
+                        </p>
+                      ) : slot.type === "dismissal" ? (
+                        <p className="text-gray-600 text-sm text-center">
+                          Pulang
+                        </p>
+                      ) : (
+                        <p className="text-gray-400 text-sm text-center">
+                          No schedule
+                        </p>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
       </div>
