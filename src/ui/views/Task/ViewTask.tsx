@@ -13,17 +13,16 @@ const ViewTask = () => {
       const response = await ApiRequest({ url: "students", method: "GET" });
       const student = response.filter(
         (student: any) => student.nis === localStorage.getItem("username")
-      )
+      );
       setUser({ name: student[0].name });
     } catch (error: any) {
       console.error("Error fetching user:", error.message || error);
     }
   };
 
-   useEffect(() => {
-      fetchUser();
-
-    }, []);
+  useEffect(() => {
+    fetchUser();
+  }, []);
   return (
     <>
       <MainLayout title="List Tasks">
@@ -93,9 +92,7 @@ const ViewTask = () => {
         </div>
         <div className="mt-6 w-full flex justify-end">
           <div>
-            <Link
-              to="/addtask"
-            >
+            <Link to="/addtask">
               <Button
                 label="Add Task"
                 color="secondary"

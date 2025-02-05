@@ -1,12 +1,13 @@
 import MainLayout from "../layouts/MainLayout";
 import skensa from "../../assets/images/skensa.png";
-import {ShoppingBag, User } from "lucide-react";
+import { ShoppingBag, User } from "lucide-react";
 import Card from "../components/SharedCompoent/Card";
 import Loading from "../components/SharedCompoent/Loading";
 import { useUser } from "@/utils/hooks/useUser";
 import { useSchedules } from "@/utils/hooks/useSchedule";
 import { useTodayData } from "@/utils/hooks/useFilterData";
 import Calendar from "../components/SharedCompoent/Calendar";
+import { ISchedules } from "@/utils/models/Schedules";
 
 // Fungsi untuk memformat waktu agar hanya menampilkan jam dan menit
 const formatTime = (time: string | null | undefined) => {
@@ -23,8 +24,20 @@ const ViewDashboard = () => {
     isLoading: schedulesLoading,
     error: schedulesError,
   } = useSchedules();
+
+  // Ambil classroom_id dari user
+  const classroomId = user?.classroom_id || 0;
+
+  // Filter schedules berdasarkan classroom_id sebelum diteruskan ke useTodayData
+  const filteredSchedules =
+    schedules?.filter(
+      (schedule: ISchedules) => schedule.classroom_id === classroomId
+    ) || [];
+
+  // Gunakan useTodayData dengan data jadwal yang sudah difilter
   const { data: todayData, isLoading: todayDataLoading } = useTodayData(
-    schedules || []
+    filteredSchedules,
+    classroomId
   );
 
   // Mengelola kondisi loading
@@ -110,7 +123,7 @@ const ViewDashboard = () => {
               Schedule
             </h1>
             <div className="w-full">
-              <Calendar schedules={schedules} />
+              <Calendar schedules={filteredSchedules} />
             </div>
           </div>
         </div>

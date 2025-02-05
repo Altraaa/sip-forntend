@@ -6,6 +6,7 @@ import Card from "../../components/SharedCompoent/Card";
 import Loading from "@/ui/components/SharedCompoent/Loading";
 import { useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Time slots and days (static configuration)
 const timeSlots = [
@@ -37,66 +38,77 @@ const ViewSchedule = () => {
 
   const loading = scheduleLoading || !userData;
 
+  // Fetching the user's classroom_id
+  const classroomId = userData?.classroom_id;
+
   // Function to group schedules by day and time slots
- const transformScheduleData = (data: ISchedules[]) => {
-   return data.map((schedule) => ({
-     ...schedule,
-     day:
-       schedule.day.charAt(0).toUpperCase() +
-       schedule.day.slice(1).toLowerCase(),
-     start_time: schedule.start_time.substring(0, 5),
-     end_time: schedule.end_time.substring(0, 5),
-   }));
- };
+  const transformScheduleData = (data: ISchedules[]) => {
+    return data.map((schedule) => ({
+      ...schedule,
+      day:
+        schedule.day.charAt(0).toUpperCase() +
+        schedule.day.slice(1).toLowerCase(),
+      start_time: schedule.start_time.substring(0, 5),
+      end_time: schedule.end_time.substring(0, 5),
+    }));
+  };
 
- // Group schedules by day and time slots
- const groupSchedulesByDayAndTime = (
-   scheduleData: ISchedules[]
- ): Record<string, ScheduleSlot[]> => {
-   const grouped: Record<string, ScheduleSlot[]> = {};
+  // Group schedules by day and time slots, filter by classroom_id
+  const groupSchedulesByDayAndTime = (
+    scheduleData: ISchedules[]
+  ): Record<string, ScheduleSlot[]> => {
+    const grouped: Record<string, ScheduleSlot[]> = {};
 
-   if (!scheduleData) return grouped;
+    if (!scheduleData) return grouped;
 
-   days.forEach((day) => {
-     grouped[day] = timeSlots.map((time) => {
-       const schedule = scheduleData.find((s) => {
-         const scheduleTime = `${s.start_time}-${s.end_time}`;
-         return s.day === day && scheduleTime === time;
-       });
+    // Filter schedule data by classroom_id
+    const filteredSchedules = scheduleData.filter(
+      (schedule) => schedule.classroom_id === classroomId
+    );
 
-       if (schedule) {
-         return { ...schedule, type: "schedule" };
-       } else if (
-         time === "10:10-10:30" ||
-         (time === "13:10-13:30" && day !== "Friday")
-       ) {
-         return { type: "break" };
-       } else if (
-         (day === "Thursday" && time === "14:50-15:30") ||
-         (day === "Friday" &&
-           [
-             "12:30-13:10",
-             "13:10-13:30",
-             "13:30-14:10",
-             "14:10-14:50",
-             "14:50-15:30",
-           ].includes(time))
-       ) {
-         return { type: "dismissal" };
-       } else {
-         return { type: "empty" };
-       }
-     });
-   });
+    days.forEach((day) => {
+      grouped[day] = timeSlots.map((time) => {
+        const schedule = filteredSchedules.find((s) => {
+          const scheduleTime = `${s.start_time.substring(
+            0,
+            5
+          )}-${s.end_time.substring(0, 5)}`;
+          return s.day === day && scheduleTime === time;
+        });
 
-   return grouped;
- };
+        if (schedule) {
+          return { ...schedule, type: "schedule" };
+        } else if (
+          time === "10:10-10:30" ||
+          (time === "13:10-13:30" && day !== "Friday")
+        ) {
+          return { type: "break" };
+        } else if (
+          (day === "Thursday" && time === "14:50-15:30") ||
+          (day === "Friday" &&
+            [
+              "12:30-13:10",
+              "13:10-13:30",
+              "13:30-14:10",
+              "14:10-14:50",
+              "14:50-15:30",
+            ].includes(time))
+        ) {
+          return { type: "dismissal" };
+        } else {
+          return { type: "empty" };
+        }
+      });
+    });
 
- // Applying transformation and grouping to the data
- const transformedScheduleData = scheduleData
-   ? transformScheduleData(scheduleData)
-   : [];
- const groupedSchedules = groupSchedulesByDayAndTime(transformedScheduleData);
+    return grouped;
+  };
+
+  // Applying transformation and grouping to the data
+  const transformedScheduleData = scheduleData
+    ? transformScheduleData(scheduleData)
+    : [];
+  const groupedSchedules = groupSchedulesByDayAndTime(transformedScheduleData);
 
   // Mobile swipe handling
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
@@ -183,9 +195,9 @@ const ViewSchedule = () => {
                 setCurrentDayIndex((prev) => Math.max(prev - 1, 0))
               }
               disabled={currentDayIndex === 0}
-              className="p-2 disabled:opacity-50"
+              className="p-2 disabled:opacity-50 bg-gray-300 transition-all ease-in-out rounded-l-xl"
             >
-              ◀
+              <ChevronLeft />
             </button>
             <h3 className="text-lg font-semibold">{days[currentDayIndex]}</h3>
             <button
@@ -195,9 +207,9 @@ const ViewSchedule = () => {
                 )
               }
               disabled={currentDayIndex === days.length - 1}
-              className="p-2 disabled:opacity-50"
+              className="p-2 disabled:opacity-50 bg-gray-300 transition-all ease-in-out rounded-r-xl"
             >
-              ▶
+              <ChevronRight />
             </button>
           </div>
           <div className="space-y-2 w-full">

@@ -16,7 +16,7 @@ export const useUserClass = (classroomId: number) => {
   return useQuery({
     queryKey: ["userClass", classroomId],
     queryFn: () => fetchUserClass(classroomId),
-    enabled: !!classroomId, // Only run this query when classroomId is available
+    enabled: !!classroomId,
   });
 };
 

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import FormLayout from "../../layouts/FormLayout";
+import { ITask } from "@/utils/models/Tasks";
+import { useTaskCreate } from "@/utils/hooks/useTask";
+import { useSubjects } from "@/utils/hooks/useSubject";
+import Loading from "@/ui/components/SharedCompoent/Loading";
 
 const ViewAddTask = () => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -9,15 +13,18 @@ const ViewAddTask = () => {
     string | number | null
   >(null);
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<string | number | null>(null);
+  const [priority, _setPriority] = useState<string | number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Contoh data untuk dropdown
-  const subjects = [
-    { id: 1, name: "Mathematics" },
-    { id: 2, name: "Physics" },
-    { id: 3, name: "Biology" },
-  ];
+  // Fetch subjects using useQuery
+  const {
+    data: subjects,
+    isLoading: isLoadingSubjects,
+    error: subjectsError,
+  } = useSubjects();
+
+  // Create Task mutation using useTaskCreate hook
+  const { mutate: createTask } = useTaskCreate();
 
   const handleSubmit = async () => {
     try {
@@ -32,28 +39,32 @@ const ViewAddTask = () => {
         return;
       }
 
-      console.log("Task Submitted:", {
-        taskTitle,
-        taskDescription,
-        selectedSubject,
-        dueDate,
-        priority,
-      });
+      // Prepare task data
+      const newTask: ITask = {
+        id: 0, // or omit if auto-generated
+        title: taskTitle,
+        description: taskDescription,
+        student_id: 1!, // Use student_id from the hook
+        subject_id: Number(selectedSubject),
+        due_date: dueDate,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
 
-      // Reset form fields after submission
-      setTaskTitle("");
-      setTaskDescription("");
-      setSelectedSubject(null);
-      setDueDate("");
-      setPriority(null);
-      setError(null);
+      // Call create task API
+      createTask(newTask);
     } catch (err) {
       setError("An error occurred while submitting the form.");
     }
   };
 
+  if (subjectsError) {
+    return <div>Error loading subjects.</div>;
+  }
+
   return (
     <MainLayout title="Add Task">
+      <Loading open={isLoadingSubjects} />
       <div className="w-full flex justify-center">
         <div className="w-full">
           <FormLayout
@@ -71,7 +82,12 @@ const ViewAddTask = () => {
               {
                 label: "Subject",
                 type: "dropdown",
-                options: subjects,
+                options: subjects?.map(
+                  (subject: { id: number; name: string }) => ({
+                    value: subject.id,
+                    label: subject.name,
+                  })
+                ),
                 value: selectedSubject,
                 onChange: setSelectedSubject,
                 required: true,

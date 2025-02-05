@@ -10,6 +10,26 @@ const ViewTeachers = () => {
   const { teachers, schedules, userData, loading } = useTeachersData(); // Menggunakan hook gabungan
   const [selectedTeacher, setSelectedTeacher] = useState<ITeacher | null>(null);
 
+  // Ambil classroom_id dari userData
+  const classroomId = userData?.classroom_id;
+
+  // Filter schedules berdasarkan classroom_id
+  const filteredSchedules = schedules?.filter(
+    (schedule: ISchedules) => schedule.classroom_id === classroomId
+  );
+
+  // Ambil daftar teacher_id yang terdaftar pada jadwal yang telah difilter
+  const teacherIds = Array.from(
+    new Set(
+      filteredSchedules?.map((schedule: ISchedules) => schedule.teacher_id)
+    )
+  );
+
+  // Filter teachers berdasarkan teacher_id yang terdaftar di jadwal
+  const filteredTeachers = teachers?.filter((teacher: ITeacher) =>
+    teacherIds.includes(teacher.id)
+  );
+
   return (
     <MainLayout title="Teachers" showSearch={false}>
       {loading && <Loading open={loading} />}
@@ -20,7 +40,7 @@ const ViewTeachers = () => {
         <p className="text-gray-600">This is the teacher page</p>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {teachers?.map((teacher: ITeacher) => (
+        {filteredTeachers?.map((teacher: ITeacher) => (
           <TeacherCard
             key={teacher.id}
             teacher={teacher}

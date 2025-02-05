@@ -22,99 +22,99 @@ function App() {
     <main className="font-poppins">
       <QueryClientProvider client={queryClient}>
         <SidebarProvider>
-        <Router>
-          <Routes>
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/class"
-              element={
-                <ProtectedRoute>
-                  <ClassPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/schedule"
-              element={
-                <ProtectedRoute>
-                  <SchedulePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/teacher"
-              element={
-                <ProtectedRoute>
-                  <TeacherPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/task"
-              element={
-                <ProtectedRoute>
-                  <ListTaskPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/addtask"
-              element={
-                <ProtectedRoute>
-                  <AddTaskPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profileEdit"
-              element={
-                <ProtectedRoute>
-                  <ProfileEditPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/help"
-              element={
-                <ProtectedRoute>
-                  <HelpPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <SettingsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <ProtectedRoute restricted={true}>
-                  <LoginPage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Router>
-      </SidebarProvider>
+          <Router>
+            <Routes>
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/class"
+                element={
+                  <ProtectedRoute>
+                    <ClassPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
+                element={
+                  <ProtectedRoute>
+                    <SchedulePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teacher"
+                element={
+                  <ProtectedRoute>
+                    <TeacherPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/task"
+                element={
+                  <ProtectedRoute>
+                    <ListTaskPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/addtask"
+                element={
+                  <ProtectedRoute>
+                    <AddTaskPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profileEdit"
+                element={
+                  <ProtectedRoute>
+                    <ProfileEditPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/help"
+                element={
+                  <ProtectedRoute>
+                    <HelpPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <SettingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute restricted={true}>
+                    <LoginPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </Router>
+        </SidebarProvider>
       </QueryClientProvider>
       <ModernToastContainer />
     </main>

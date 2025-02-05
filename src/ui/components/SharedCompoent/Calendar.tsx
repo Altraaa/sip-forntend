@@ -1,4 +1,5 @@
 import { ISchedules } from "@/utils/models/Schedules";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface CalendarProps {
@@ -163,7 +164,7 @@ const Calendar = ({ isSidebarExpanded }: CalendarProps) => {
           className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
           aria-label="Previous Month"
         >
-          &lt;
+          <ChevronLeft />
         </button>
         <p
           className={`font-semibold text-center ${
@@ -177,7 +178,7 @@ const Calendar = ({ isSidebarExpanded }: CalendarProps) => {
           className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
           aria-label="Next Month"
         >
-          &gt;
+          <ChevronRight />
         </button>
       </div>
 

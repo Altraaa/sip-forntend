@@ -2,10 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { ISchedules } from "@/utils/models/Schedules";
 
 // Fungsi untuk menghitung data hari ini
-const fetchTodayData = (schedules: ISchedules[]) => {
+const fetchTodayData = (schedules: ISchedules[], classroomId: number) => {
   const today = new Date().toLocaleString("en-US", { weekday: "long" });
   const todaySchedules = schedules?.filter(
-    (schedule: ISchedules) => schedule.day === today
+    (schedule: ISchedules) =>
+      schedule.day === today && schedule.classroom_id === classroomId
   );
   const totalSubjects = new Set(
     todaySchedules?.map((item: ISchedules) => item.subject.name)
@@ -25,10 +26,10 @@ const fetchTodayData = (schedules: ISchedules[]) => {
   };
 };
 
-export const useTodayData = (schedules: ISchedules[]) => {
+export const useTodayData = (schedules: ISchedules[], classroomId: number) => {
   return useQuery({
-    queryKey: ["todayData", schedules],
-    queryFn: () => fetchTodayData(schedules),
-    enabled: !!schedules && schedules.length > 0, // Pastikan data jadwal ada dan valid
+    queryKey: ["todayData", schedules, classroomId],
+    queryFn: () => fetchTodayData(schedules, classroomId),
+    enabled: !!(schedules && schedules.length && classroomId), // Pastikan enabled hanya true jika schedules dan classroomId valid
   });
 };
