@@ -1,70 +1,33 @@
-import { useState, useEffect } from "react";
-import { ITeacher } from "../../../utils/models/Teacher";
-import { ApiTeachers } from "../../../utils/services/Teacher.service";
+import { useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import Card from "../../components/SharedCompoent/Card";
+import { ITeacher } from "../../../utils/models/Teacher";
 import { ISchedules } from "@/utils/models/Schedules";
-import { ApiSchedules } from "@/utils/services/Schedule.service";
-import { ApiRequest } from "../../../utils/services/Api.service";
+import Loading from "@/ui/components/SharedCompoent/Loading";
+import { useTeachersData } from "@/utils/hooks/useTeacher";
+
 const ViewTeachers = () => {
-  const [teachers, setTeachers] = useState<ITeacher[]>([]);
-  const [schedules, setSchedules] = useState<ISchedules[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { teachers, schedules, userData, loading } = useTeachersData(); // Menggunakan hook gabungan
   const [selectedTeacher, setSelectedTeacher] = useState<ITeacher | null>(null);
-  const [user, setUser] = useState<{ name: string } | null>(null);
-
-
-  const fetchUser = async () => {
-    try {
-      const response = await ApiRequest({ url: "students", method: "GET" });
-      const student = response.filter(
-        (student: any) => student.nis === localStorage.getItem("username")
-      )
-      setUser({ name: student[0].name });
-    } catch (error: any) {
-      console.error("Error fetching user:", error.message || error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const teachersData = await ApiTeachers.getAll();
-        const scheduleData = await ApiSchedules.getAll();
-        setTeachers(teachersData);
-        setSchedules(scheduleData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-    fetchUser();
-  }, []);
 
   return (
     <MainLayout title="Teachers" showSearch={false}>
+      {loading && <Loading open={loading} />}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">
-          Hi, <span className="text-customColor-oranye">{user?.name}</span>
+          Hi, <span className="text-customColor-oranye">{userData?.name}</span>
         </h2>
         <p className="text-gray-600">This is the teacher page</p>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          teachers.map((teacher) => (
-            <TeacherCard
-              key={teacher.id}
-              teacher={teacher}
-              schedules={schedules}
-              onClick={() => setSelectedTeacher(teacher)}
-            />
-          ))
-        )}
+        {teachers?.map((teacher: ITeacher) => (
+          <TeacherCard
+            key={teacher.id}
+            teacher={teacher}
+            schedules={schedules}
+            onClick={() => setSelectedTeacher(teacher)}
+          />
+        ))}
       </div>
 
       {selectedTeacher && (

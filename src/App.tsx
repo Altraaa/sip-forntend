@@ -12,12 +12,16 @@ import ListTaskPage from "./pages/ListTaskPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./utils/routes/ProtectedRoutes";
 import AddTaskPage from "./pages/AddTaskPage";
-import ModernToastContainer  from "./ui/components/SharedCompoent/ModernToastContainer";
+import ModernToastContainer from "./ui/components/SharedCompoent/ModernToastContainer";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
     <main className="font-poppins">
-      <SidebarProvider>
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider>
         <Router>
           <Routes>
             <Route
@@ -111,6 +115,7 @@ function App() {
           </Routes>
         </Router>
       </SidebarProvider>
+      </QueryClientProvider>
       <ModernToastContainer />
     </main>
   );

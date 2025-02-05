@@ -1,88 +1,40 @@
-import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
 import skensa from "../../assets/images/skensa.png";
-import Calendar from "../components/SharedCompoent/Calendar";
-import { ShoppingBag, User } from "lucide-react";
+import {ShoppingBag, User } from "lucide-react";
 import Card from "../components/SharedCompoent/Card";
-import { ApiRequest } from "../../utils/services/Api.service";
-import { ISchedules } from "../../utils/models/Schedules";
+import Loading from "../components/SharedCompoent/Loading";
+import { useUser } from "@/utils/hooks/useUser";
+import { useSchedules } from "@/utils/hooks/useSchedule";
+import { useTodayData } from "@/utils/hooks/useFilterData";
+import Calendar from "../components/SharedCompoent/Calendar";
 
 // Fungsi untuk memformat waktu agar hanya menampilkan jam dan menit
-const formatTime = (time: string | null) => {
-  if (!time) return "-";
+const formatTime = (time: string | null | undefined) => {
+  if (!time) return "-"; // Pastikan time tidak null atau undefined
   const [hours, minutes] = time.split(":");
   return `${hours}:${minutes}`;
 };
 
 const ViewDashboard = () => {
-  const [schedules, setSchedules] = useState<ISchedules[]>([]);
-  const [user, setUser] = useState<{ name: string } | null>(null);
-  const [todayData, setTodayData] = useState<{
-    subject: string | null;
-    teacher: string | null;
-    nip: string | null;
-    startTime: string | null;
-    endTime: string | null;
-    totalSubjects: number;
-    totalTeachers: number;
-  }>({
-    subject: null,
-    teacher: null,
-    nip: null,
-    startTime: null,
-    endTime: null,
-    totalSubjects: 0,
-    totalTeachers: 0,
-  });
+  // Query untuk mengambil data user
+  const { data: user, isLoading: userLoading, error: userError } = useUser();
+  const {
+    data: schedules,
+    isLoading: schedulesLoading,
+    error: schedulesError,
+  } = useSchedules();
+  const { data: todayData, isLoading: todayDataLoading } = useTodayData(
+    schedules || []
+  );
 
-  const fetchUser = async () => {
-    try {
-      const response = await ApiRequest({ url: "students", method: "GET" });
-      const student = response.filter(
-        (student: any) => student.nis === localStorage.getItem("username")
-      )
-      setUser({ name: student[0].name });
-    } catch (error: any) {
-      console.error("Error fetching user:", error.message || error);
-    }
-  };
+  // Mengelola kondisi loading
+  const loading = userLoading || schedulesLoading || todayDataLoading;
 
-  const fetchSchedules = async () => {
-    try {
-      const response = await ApiRequest({ url: "schedules", method: "GET" });
-      const today = new Date().toLocaleString("en-US", { weekday: "long" });
-      const todaySchedules = response.filter(
-        (schedule: ISchedules) => schedule.day === today
-      );
-      const totalSubjects = new Set(
-        todaySchedules.map((item: ISchedules) => item.subject.name)
-      ).size;
-      const totalTeachers = new Set(
-        todaySchedules.map((item: ISchedules) => item.teacher.name)
-      ).size;
+  if (userError || schedulesError) {
+    return <p>Error fetching data</p>;
+  }
 
-      setTodayData({
-        subject: todaySchedules[0]?.subject.name || null,
-        teacher: todaySchedules[0]?.teacher.name || null,
-        nip: todaySchedules[0]?.teacher.nip || null,
-        startTime: todaySchedules[0]?.start_time || null,
-        endTime: todaySchedules[0]?.end_time || null,
-        totalSubjects,
-        totalTeachers,
-      });
-
-      setSchedules(todaySchedules);
-    } catch (error: any) {
-      console.error("Error fetching schedules:", error.message || error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSchedules();
-    fetchUser();
-  }, []);
-
-  const HeroSection = () => (
+  const HeroSection = ({ user }: { user: any }) => (
     <div className="w-full md:h-64 lg:h-80 xl:h-[350px] md:flex items-center shadow-2xl mt-6 rounded-2xl bg-customColor-darkBlue overflow-hidden">
       <div className="lg:px-14 px-8 py-10 md:w-1/2 md:h-auto h-1/2">
         <h2 className="lg:text-3xl xl:text-4xl text-lg font-bold text-white">
@@ -105,24 +57,24 @@ const ViewDashboard = () => {
     </div>
   );
 
-  const StatisticsSection = () => (
+  const StatisticsSection = ({ todayData }: { todayData: any }) => (
     <div className="space-y-4">
       <h1 className="md:text-3xl text-lg font-semibold">Today's Data</h1>
       <div className="flex justify-between items-baseline border-b-2 border-b-customColor-lightBlue">
         <h2 className="md:text-2xl text-lg font-medium">Total Subjects:</h2>
-        <span className="md:text-8xl text-6xl">{todayData.totalSubjects}</span>
+        <span className="md:text-8xl text-6xl">{todayData?.totalSubjects}</span>
       </div>
       <div className="flex justify-between items-baseline border-b-2 border-b-customColor-lightBlue">
         <h2 className="md:text-2xl text-lg font-medium">Total Teachers:</h2>
-        <span className="md:text-8xl text-6xl">{todayData.totalTeachers}</span>
+        <span className="md:text-8xl text-6xl">{todayData?.totalTeachers}</span>
       </div>
     </div>
   );
 
-
   return (
     <MainLayout title="Dashboard">
-      <HeroSection />
+      <Loading open={loading} />
+      <HeroSection user={user} />
       <div className="w-full mt-12 md:mt-16 flex flex-col xl:grid xl:grid-cols-[2fr_1fr] justify-between gap-10">
         <div className="flex flex-col justify-between gap-5 md:gap-2 xl:gap-8">
           <div className="font-semibold text-xl md:text-3xl md:mb-5 xl:mb-0">
@@ -130,9 +82,9 @@ const ViewDashboard = () => {
           </div>
           <div className="flex flex-col md:flex-row md:gap-10 gap-6 mb-5 md:mb-10 xl:mb-0">
             <Card
-              title={todayData.subject || "No Data"}
-              desc={`${formatTime(todayData.startTime)} - ${formatTime(
-                todayData.endTime
+              title={todayData?.subject || "No Data"}
+              desc={`${formatTime(todayData?.startTime)} - ${formatTime(
+                todayData?.endTime
               )}`}
               icon={<ShoppingBag size={24} />}
               iconClassName="bg-customColor-coldBlue text-white"
@@ -141,8 +93,8 @@ const ViewDashboard = () => {
               className="md:w-1/2 w-full !justify-start !pl-6 !gap-x-6 xl:pl-0 xl:gap-x-0"
             />
             <Card
-              title={todayData.teacher || "No Data"}
-              desc={`NIP: ${todayData.nip || "-"}`}
+              title={todayData?.teacher || "No Data"}
+              desc={`NIP: ${todayData?.nip || "-"}`}
               icon={<User size={24} />}
               iconClassName="bg-customColor-lightOranye text-white"
               color="third"
@@ -150,11 +102,13 @@ const ViewDashboard = () => {
               className="md:w-1/2 w-full !justify-start !pl-6 !gap-x-6 xl:pl-0 xl:gap-x-0"
             />
           </div>
-          <StatisticsSection />
+          <StatisticsSection todayData={todayData} />
         </div>
         <div className="md:flex flex-col">
           <div>
-            <h1 className="md:text-3xl text-xl font-semibold mb-5 ">Schedule</h1>
+            <h1 className="md:text-3xl text-xl font-semibold mb-5 ">
+              Schedule
+            </h1>
             <div className="w-full">
               <Calendar schedules={schedules} />
             </div>
@@ -164,6 +118,5 @@ const ViewDashboard = () => {
     </MainLayout>
   );
 };
-
 
 export default ViewDashboard;
