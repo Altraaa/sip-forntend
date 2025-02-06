@@ -29,7 +29,9 @@ const ViewClass = () => {
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>ID</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+              Attendance
+            </th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Name</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>NIS</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
@@ -45,7 +47,7 @@ const ViewClass = () => {
             data.map((student: IStudent) => (
               <tr key={student.id}>
                 <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.id}
+                  {student.attendance_number}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                   {student.name}
@@ -54,10 +56,10 @@ const ViewClass = () => {
                   {student.nis}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.phone_number}
+                  {student.phone_number ? student.phone_number : "-"}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.description}
+                  {student.description ? student.description : "-"}
                 </td>
               </tr>
             ))

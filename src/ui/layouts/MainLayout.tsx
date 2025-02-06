@@ -74,8 +74,7 @@ const ProfileIcon = () => {
           </div>
           <div className="flex justify-between items-center mb-2">
             <p className="font-semibold w-72 text-black rounded">
-              {user?.name} -{" "}
-              {userClass?.name || ""}
+              {user?.name} - {userClass?.name || ""}
             </p>
           </div>
           <hr className="my-2" />

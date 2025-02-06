@@ -4,7 +4,7 @@ export interface IStudent {
   name: string;
   user_id: number;
   classroom_id: number;
-  attedance_number: number;
+  attendance_number: number;
   phone_number: number;
   description: string;
   created_at: string;

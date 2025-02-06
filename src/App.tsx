@@ -25,7 +25,7 @@ function App() {
           <Router>
             <Routes>
               <Route
-                path="/dashboard"
+                path="/"
                 element={
                   <ProtectedRoute>
                     <DashboardPage />

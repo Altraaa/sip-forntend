@@ -27,7 +27,7 @@ const ViewLogin = () => {
       // Tunggu 500ms sebelum redirect
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (err: any) {
       if (err?.response?.status === 401) {
         showModernToast.error("Username atau password salah!");

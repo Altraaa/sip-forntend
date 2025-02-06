@@ -44,7 +44,7 @@ const menuItems = [
   {
     icon: <LayoutDashboard size={20} />,
     text: "Dashboard",
-    link: "/dashboard",
+    link: "/",
   },
   {
     icon: <Layers3 size={20} />,
