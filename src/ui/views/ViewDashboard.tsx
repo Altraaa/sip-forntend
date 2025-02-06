@@ -85,7 +85,7 @@ const ViewDashboard = () => {
   );
 
   return (
-    <MainLayout title="Dashboard">
+    <MainLayout title="Dashboard" showSearch={false}>
       <Loading open={loading} />
       <HeroSection user={user} />
       <div className="w-full mt-12 md:mt-16 flex flex-col xl:grid xl:grid-cols-[2fr_1fr] justify-between gap-10">

@@ -119,7 +119,7 @@ const ViewSchedule = () => {
   });
 
   return (
-    <MainLayout title="Schedule">
+    <MainLayout title="Schedule" showSearch={false}>
       <Loading open={loading} />
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">

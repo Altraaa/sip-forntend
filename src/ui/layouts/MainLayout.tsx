@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { useSidebar } from "../components/Sidebar";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import UserProfile from "../views/Profile/ViewProfile";
+import { useProfileData } from "@/utils/hooks/userProfile";
 
 interface MainLayoutProps {
   children?: React.ReactNode;
@@ -38,22 +38,25 @@ interface NotificationPopupProps {
   onDeleteOne: (id: string) => void;
   onDeleteAll: () => void;
 }
-
-interface UserProfile {
-  firstname: string;
-  lastname: string;
-  photo?: string;
-  class?: string;
-}
-
-const ProfileIcon = ({ user }: { user?: UserProfile }) => {
+const ProfileIcon = () => {
+  const { user, userClass, error } = useProfileData();
   const [showProfile, setShowProfile] = useState(false);
+
+  if (error) {
+    return (
+      <div className="relative">
+        <button className="p-2">
+          <span>Error loading profile</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
       <button onClick={() => setShowProfile((prev) => !prev)}>
         <img
-          src={user?.photo}
+          src={user?.photo || "src/assets/images/dummyAvatar.png"} // Gambar default jika tidak ada
           alt="Profile"
           className="cursor-pointer w-10 h-10 rounded-full"
         />
@@ -70,9 +73,9 @@ const ProfileIcon = ({ user }: { user?: UserProfile }) => {
             </button>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <p className="font-semibold w-72 text-black p-2 rounded">
-              {user?.firstname || ""} {user?.lastname || ""} -{" "}
-              {user?.class || ""}
+            <p className="font-semibold w-72 text-black rounded">
+              {user?.name} -{" "}
+              {userClass?.name || ""}
             </p>
           </div>
           <hr className="my-2" />
@@ -179,8 +182,7 @@ const Header = ({
   onSearchChange,
   searchQuery,
   toggleSidebar,
-  user,
-}: HeaderProps & { user?: UserProfile }) => {
+}: HeaderProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -376,7 +378,7 @@ const Header = ({
                 />
               </>
             )}
-            <ProfileIcon user={user} />
+            <ProfileIcon />
           </div>
         </div>
       </div>
@@ -419,7 +421,6 @@ const MainLayout = ({
 }: MainLayoutProps) => {
   const { toggleSidebar } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
-  const [user] = useState<UserProfile | null>(null);
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -440,7 +441,6 @@ const MainLayout = ({
           onSearchChange={handleSearchChange}
           searchQuery={searchQuery}
           toggleSidebar={toggleSidebar}
-          user={user || { firstname: "", lastname: "", class: "" }}
         />
         <hr className="border border-black" />
         <div

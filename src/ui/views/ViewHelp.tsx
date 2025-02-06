@@ -3,7 +3,7 @@ import {Mail, Phone, MessageCircleMore, MessageCircle} from "lucide-react";
 
 const ViewHelp = () => {
   return (
-      <MainLayout title="Help">
+      <MainLayout title="Help" showSearch={false}>
         <div className="container mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold mb-3">Help Center</h1>
           

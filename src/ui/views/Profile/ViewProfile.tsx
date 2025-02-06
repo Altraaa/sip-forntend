@@ -12,7 +12,7 @@ const ViewProfile = () => {
   }
 
   return (
-    <MainLayout title="Profile">
+    <MainLayout title="Profile" showSearch={false}>
       <Loading open={loading} />
       <div className="flex flex-col md:flex-row p-2">
         <div className="w-full mb-5 md:mb-0 md:w-1/3 bg-gray-50 border-2 border-customColor-darkBlue shadow-2xl rounded-lg p-4 rounded-medium text-center">

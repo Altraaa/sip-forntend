@@ -31,7 +31,7 @@ const ViewTeachers = () => {
   );
 
   return (
-    <MainLayout title="Teachers" showSearch={false}>
+    <MainLayout title="Teachers">
       {loading && <Loading open={loading} />}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">

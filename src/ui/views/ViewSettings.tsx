@@ -6,7 +6,7 @@ const ViewSettings = () => {
   };
   return (
     <>
-      <MainLayout title="Settings" className="my-11">
+      <MainLayout title="Settings" className="my-11" showSearch={false}>
         <div className="font-bold text-3xl mb-2">Notification</div>
         <div className="flex justify-between w-full border-b-black border-b-2 pb-2">
           <div>
