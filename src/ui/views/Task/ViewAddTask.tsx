@@ -5,6 +5,8 @@ import { ITask } from "@/utils/models/Tasks";
 import { useTaskCreate } from "@/utils/hooks/useTask";
 import { useSubjects } from "@/utils/hooks/useSubject";
 import Loading from "@/ui/components/SharedCompoent/Loading";
+import ModalConfirmation from "@/ui/components/SharedCompoent/ModalConfirmation";
+import { ISubject } from "@/utils/models/Subject";
 
 const ViewAddTask = () => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -13,8 +15,10 @@ const ViewAddTask = () => {
     string | number | null
   >(null);
   const [dueDate, setDueDate] = useState("");
-  const [priority, _setPriority] = useState<string | number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // State untuk kontrol modal konfirmasi
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch subjects using useQuery
   const {
@@ -32,35 +36,49 @@ const ViewAddTask = () => {
         !taskTitle ||
         !taskDescription ||
         !dueDate ||
-        !selectedSubject ||
-        !priority
+        !selectedSubject
       ) {
         setError("All fields are required.");
         return;
       }
 
-      // Prepare task data
-      const newTask: ITask = {
-        id: 0, // or omit if auto-generated
-        title: taskTitle,
-        description: taskDescription,
-        student_id: 1!, // Use student_id from the hook
-        subject_id: Number(selectedSubject),
-        due_date: dueDate,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      // Call create task API
-      createTask(newTask);
+      // Show confirmation modal before submitting the task
+      setIsModalOpen(true);
     } catch (err) {
       setError("An error occurred while submitting the form.");
     }
   };
 
+  const handleConfirmSubmit = () => {
+    // Call create task API after modal confirmation
+    const newTask: ITask = {
+      id: 0, // or omit if auto-generated
+      title: taskTitle,
+      description: taskDescription,
+      student_id: 1!, // Use student_id from the hook
+      subject_id: Number(selectedSubject),
+      due_date: dueDate,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    createTask(newTask);
+    setIsModalOpen(false); // Close modal after submit
+  };
+
+  const handleCancelSubmit = () => {
+    setIsModalOpen(false); // Close modal without submitting
+  };
+
   if (subjectsError) {
     return <div>Error loading subjects.</div>;
   }
+
+  const options = subjects
+    ? subjects.map((subject: ISubject) => ({
+        id: subject.id,
+        name: subject.name,
+      }))
+    : [];
 
   return (
     <MainLayout title="Add Task">
@@ -82,12 +100,7 @@ const ViewAddTask = () => {
               {
                 label: "Subject",
                 type: "dropdown",
-                options: subjects?.map(
-                  (subject: { id: number; name: string }) => ({
-                    value: subject.id,
-                    label: subject.name,
-                  })
-                ),
+                options: options,
                 value: selectedSubject,
                 onChange: setSelectedSubject,
                 required: true,
@@ -117,6 +130,17 @@ const ViewAddTask = () => {
           />
         </div>
       </div>
+
+      {/* Modal Confirmation */}
+      <ModalConfirmation
+        isOpen={isModalOpen}
+        title="Confirm Task Creation"
+        message="Are you sure you want to create this task?"
+        onClose={handleCancelSubmit}
+        onConfirm={handleConfirmSubmit}
+        confirmText="Yes"
+        color="secondary"
+      />
     </MainLayout>
   );
 };

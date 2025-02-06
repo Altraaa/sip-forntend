@@ -9,6 +9,7 @@ interface ModalConfirmationProps {
   message: string;
   onClose: () => void;
   onConfirm: () => void;
+  color?: "primary" | "secondary" | "default" | "danger";
   confirmText?: string;
   cancelText?: string;
   isLogout?: boolean;
@@ -18,6 +19,7 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
   isOpen,
   title,
   message,
+  color,
   onClose,
   onConfirm,
   confirmText = "Delete",
@@ -66,7 +68,7 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
               onClick={handleConfirm}
               label={confirmText}
               variant="contained"
-              color="danger"
+              color={color}
               className="xl:px-16 md:px-9 px-4 text-sm md:text-base"
             />
           </div>
