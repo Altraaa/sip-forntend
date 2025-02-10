@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApiAuth } from "@/utils/services/Auth.service"; // Sesuaikan dengan path ke ApiAuth service
 import { showModernToast } from "../components/SharedCompoent/ModernToastContainer";
@@ -12,6 +12,28 @@ const ViewLogin = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Pemeriksaan waktu login saat komponen dimuat
+  useEffect(() => {
+    const loginTime = localStorage.getItem("lastAccess");
+    const currentTime = Date.now();
+
+    if (loginTime) {
+      // Mengecek apakah sudah lebih dari 6 jam
+      const timeElapsed = currentTime - new Date(loginTime).getTime();
+      const sixHours = 6 * 60 * 60 * 1000; // 6 jam dalam milidetik
+
+      if (timeElapsed > sixHours) {
+        // Jika lebih dari 6 jam, reset localStorage
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("studentId");
+        localStorage.removeItem("lastAccess");
+
+        showModernToast.error("Session expired, please log in again!");
+      }
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     setLoading(true);
     setError(null);
@@ -20,14 +42,16 @@ const ViewLogin = () => {
       const response = await ApiAuth.loginUser({ username, password });
       localStorage.setItem("token", response.token);
       localStorage.setItem("username", username);
+      const currentTime = Date.now();
+      localStorage.setItem("lastAccess", currentTime.toString()); // Menyimpan waktu login
 
       // Tampilkan toast sukses
-      showModernToast.success("Login Succesfully");
+      showModernToast.success("Login Successfully");
 
       // Tunggu 500ms sebelum redirect
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      navigate("/");
+      navigate("/"); // Redirect ke halaman utama setelah login sukses
     } catch (err: any) {
       if (err?.response?.status === 401) {
         showModernToast.error("Username atau password salah!");
@@ -131,6 +155,7 @@ const ViewLogin = () => {
             transform: translateY(0);
             opacity: 1;
           }
+
           100% {
             transform: translateY(-110vh);
             opacity: 0;

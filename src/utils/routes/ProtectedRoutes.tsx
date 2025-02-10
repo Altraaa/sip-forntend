@@ -25,7 +25,7 @@ const ProtectedRoute = ({
   // Jika pengguna sudah login dan mencoba mengakses halaman login, redirect ke dashboard atau halaman utama
   if (restricted) {
     console.log("User is already logged in. Redirecting from login page.");
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   console.log("Token found. Access granted.");

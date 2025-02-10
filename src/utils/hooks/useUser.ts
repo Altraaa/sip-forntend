@@ -10,6 +10,10 @@ const fetchUser = async () => {
   const response = await ApiRequest({ url: "students", method: "GET" });
   const user = response.find((student: any) => student.nis === storedUsername);
   if (!user) throw new Error("User not found");
+
+  // Save student id to localStorage
+  localStorage.setItem("studentId", user.id);
+
   return user;
 };
 
