@@ -1,30 +1,39 @@
-import { useQuery } from "@tanstack/react-query";
-import { ApiRequest } from "@/utils/services/Api.service";
-import { useMutation } from "@tanstack/react-query";
-import { ITask } from "@/utils/models/Tasks";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ApiRequest } from "../services/Api.service";
+import { useUser } from "./useUser"; // Assuming this hook fetches the user
+import { ITask } from "../models/Tasks";
+import { console } from "inspector";
 
-// Fungsi untuk mengambil tugas berdasarkan student_id
-const fetchTasks = async (studentId: number) => {
+// Fetch tasks based on studentId
+const fetchTasks = async () => {
   const response = await ApiRequest({
-    url: `tasks?student_id=${studentId}`,
+    url: "tasks", 
     method: "GET",
   });
   return response;
 };
 
+console.log(fetchTasks)
+
 export const useTasks = () => {
-  // Ambil student_id dari localStorage
-  const studentId = localStorage.getItem("student_id");
-
-  if (!studentId) {
-    throw new Error("Student ID not found in localStorage.");
-  }
-
-  return useQuery({
-    queryKey: ["tasks", studentId],
-    queryFn: () => fetchTasks(Number(studentId)),
+  const { data: user } = useUser();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["tasks", user?.id],
+    queryFn: fetchTasks,
   });
+
+  // Filter tasks based on the studentId
+  const filteredTasks = data?.filter(
+    (task: any) => task.student_id === user?.id
+  );
+
+  return {
+    data: filteredTasks, // Return filtered tasks
+    isLoading,
+    isError,
+  };
 };
+
 
 // Fungsi untuk membuat tugas baru
 const createTask = async (newTask: ITask) => {

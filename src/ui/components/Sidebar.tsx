@@ -348,7 +348,7 @@ const Sidebar = () => {
         message="You want to logout?"
         onConfirm={handleLogout}
         isLogout={true}
-        cancelText="Cancel"
+        color="danger" cancelText="Cancel"
         confirmText="Logout"
 
       />

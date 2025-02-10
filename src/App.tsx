@@ -18,7 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 function App() {
   const queryClient = new QueryClient();
 
-  return (
+  return (                                                                                                                                                                                    
     <main className="font-poppins">
       <QueryClientProvider client={queryClient}>
         <SidebarProvider>

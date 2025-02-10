@@ -7,6 +7,8 @@ import { useSubjects } from "@/utils/hooks/useSubject";
 import Loading from "@/ui/components/SharedCompoent/Loading";
 import ModalConfirmation from "@/ui/components/SharedCompoent/ModalConfirmation";
 import { ISubject } from "@/utils/models/Subject";
+import { showModernToast } from "@/ui/components/SharedCompoent/ModernToastContainer"; // Import the toast
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 
 const ViewAddTask = () => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -30,14 +32,12 @@ const ViewAddTask = () => {
   // Create Task mutation using useTaskCreate hook
   const { mutate: createTask } = useTaskCreate();
 
+  // Initialize the navigate function from react-router-dom
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     try {
-      if (
-        !taskTitle ||
-        !taskDescription ||
-        !dueDate ||
-        !selectedSubject
-      ) {
+      if (!taskTitle || !taskDescription || !dueDate || !selectedSubject) {
         setError("All fields are required.");
         return;
       }
@@ -49,20 +49,31 @@ const ViewAddTask = () => {
     }
   };
 
-  const handleConfirmSubmit = () => {
-    // Call create task API after modal confirmation
-    const newTask: ITask = {
-      id: 0, // or omit if auto-generated
-      title: taskTitle,
-      description: taskDescription,
-      student_id: 1!, // Use student_id from the hook
-      subject_id: Number(selectedSubject),
-      due_date: dueDate,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    createTask(newTask);
-    setIsModalOpen(false); // Close modal after submit
+  const handleConfirmSubmit = async () => {
+    try {
+      // Call create task API after modal confirmation
+      const newTask: ITask = {
+        id: 0, // or omit if auto-generated
+        title: taskTitle,
+        description: taskDescription,
+        student_id: 1!, // Use student_id from the hook
+        subject_id: Number(selectedSubject),
+        due_date: dueDate,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      await createTask(newTask); // Wait for task creation to complete
+
+      showModernToast.success("Task created successfully!"); // Show success toast
+
+      // Redirect to /task page after successful task creation
+      navigate("/task");
+
+      setIsModalOpen(false); // Close modal after submit
+    } catch (error) {
+      showModernToast.error("Error creating task."); // Show error toast if something went wrong
+    }
   };
 
   const handleCancelSubmit = () => {
@@ -134,7 +145,7 @@ const ViewAddTask = () => {
       {/* Modal Confirmation */}
       <ModalConfirmation
         isOpen={isModalOpen}
-        title="Confirm Task Creation"
+        title="Is that correct?"
         message="Are you sure you want to create this task?"
         onClose={handleCancelSubmit}
         onConfirm={handleConfirmSubmit}
