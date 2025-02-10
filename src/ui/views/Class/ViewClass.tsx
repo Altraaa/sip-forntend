@@ -25,48 +25,104 @@ const ViewClass = () => {
 
   return (
     <MainLayout title="Class">
-      <h2>Student List</h2>
+      <h2 className="text-2xl font-semibold">Student List</h2>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+            <th
+              style={{
+                padding: "8px",
+                backgroundColor: "#47acbe",
+                borderRadius: "20px 0 0 0",
+              }}
+            >
               Attendance
             </th>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>Name</th>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>NIS</th>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+            <th style={{ padding: "8px", backgroundColor: "#47acbe" }}>Name</th>
+            <th style={{ padding: "8px", backgroundColor: "#47acbe" }}>NIS</th>
+            <th style={{ padding: "8px", backgroundColor: "#47acbe" }}>
               Phone Number
             </th>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+            <th
+              style={{
+                padding: "8px",
+                backgroundColor: "#47acbe",
+                borderRadius: "0 20px 0 0",
+              }}
+            >
               Description
             </th>
           </tr>
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map((student: IStudent) => (
-              <tr key={student.id}>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.attendance_number}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.name}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.nis}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.phone_number ? student.phone_number : "-"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {student.description ? student.description : "-"}
-                </td>
-              </tr>
-            ))
+            data.map(
+              (
+                student: IStudent,
+                index: number // Add index here!
+              ) => (
+                <tr key={student.id}>
+                  <td
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                      backgroundColor:
+                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                      borderRadius:
+                        index === data.length - 1 ? "0 0 0 20px" : "0",
+                    }}
+                  >
+                    {student.attendance_number}
+                  </td>
+                  <td
+                    style={{
+                      padding: "8px",
+                      backgroundColor:
+                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                    }}
+                  >
+                    {student.name}
+                  </td>
+                  <td
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                      backgroundColor:
+                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                    }}
+                  >
+                    {student.nis}
+                  </td>
+                  <td
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                      backgroundColor:
+                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                    }}
+                  >
+                    {student.phone_number ? student.phone_number : "-"}
+                  </td>
+                  {/* Last Column - Rounded Only in the Last Row */}
+                  <td
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                      backgroundColor:
+                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                      borderRadius:
+                        index === data.length - 1 ? "0 0 20px" : "0", // Rounds bottom corners only on last row
+                    }}
+                  >
+                    {student.description ? student.description : "-"}
+                  </td>
+                </tr>
+              )
+            )
           ) : (
             <tr>
               <td colSpan={5} style={{ textAlign: "center", padding: "8px" }}>
-                No students found
+                No data available
               </td>
             </tr>
           )}
