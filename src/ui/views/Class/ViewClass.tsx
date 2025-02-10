@@ -59,7 +59,7 @@ const ViewClass = () => {
             data.map(
               (
                 student: IStudent,
-                index: number // Add index here!
+                index: number
               ) => (
                 <tr key={student.id}>
                   <td
@@ -103,7 +103,6 @@ const ViewClass = () => {
                   >
                     {student.phone_number ? student.phone_number : "-"}
                   </td>
-                  {/* Last Column - Rounded Only in the Last Row */}
                   <td
                     style={{
                       padding: "8px",
@@ -111,7 +110,7 @@ const ViewClass = () => {
                       backgroundColor:
                         student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
                       borderRadius:
-                        index === data.length - 1 ? "0 0 20px" : "0", // Rounds bottom corners only on last row
+                        index === data.length - 1 ? "0 0 20px" : "0", 
                     }}
                   >
                     {student.description ? student.description : "-"}
