@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiRequest } from "@/utils/services/Api.service";
 import { useState, useEffect } from "react";
 import { useUser } from "./useUser";
+import { IStudent } from "../models/Student";
 
 // Fetch User Class data
 const fetchUserClass = async (classroomId: number) => {
@@ -65,3 +66,24 @@ export const useProfileData = () => {
     error,
   };
 };
+
+const editProfile = async (dataProfile: IStudent) => {
+  const response = await ApiRequest({
+    url: `students/${dataProfile.id}`,
+    method: "PUT",
+    body: dataProfile,
+  })
+  return response;
+}
+
+export const userEditProfile = () => {
+  return useMutation({
+    mutationFn: editProfile,
+    onError: (error: any) => {
+      console.error("Error editing profile: ", error);
+    },
+    onSuccess: (data) => {
+      console.log("Profile successfully updated: ", data);
+    }
+  })
+}
