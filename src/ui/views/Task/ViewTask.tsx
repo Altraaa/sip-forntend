@@ -34,18 +34,23 @@ const ViewTask = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {tasks.map((task: any) => (
               <Card key={task.id} color="secondary" variant="outlined">
-                <div className="flex flex-col w-full gap-5 xl:p-2">
+                <div className="flex flex-col justify-between gap-5 w-full h-full xl:p-2">
                   <div className="space-y-1">
-                    <h1 className="font-semibold">{task.title}</h1>
-                    <h2 className="text-sm">Due date : </h2>
-                    <p className="text-gray-600 text-xs">{task.description}</p>
+                    <h1 className="font-semibold capitalize">{task.title}</h1>
+                    <h2 className="text-sm">Due date : {task.due_date} </h2>
+                    <h3 className="text-sm">Subject : {task.subject?.name}</h3>
+                    <p className="text-gray-600 text-xs overflow-hidden text-ellipsis whitespace-nowrap">
+                      {task.description}
+                    </p>
                   </div>
-                  <Button
-                    label="View Detail"
-                    color="secondary"
-                    variant="contained"
-                    className="text-sm"
-                  />
+                  <Link to={`/task/${task.id}`}>
+                    <Button
+                      label="View Detail"
+                      color="secondary"
+                      variant="contained"
+                      className="text-sm"
+                    />
+                  </Link>
                 </div>
               </Card>
             ))}

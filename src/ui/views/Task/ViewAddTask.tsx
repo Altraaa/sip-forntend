@@ -1,7 +1,6 @@
 import { useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import FormLayout from "../../layouts/FormLayout";
-import { ITask } from "@/utils/models/Tasks";
 import { useTaskCreate } from "@/utils/hooks/useTask";
 import { useSubjects } from "@/utils/hooks/useSubject";
 import Loading from "@/ui/components/SharedCompoent/Loading";
@@ -52,7 +51,7 @@ const ViewAddTask = () => {
   const handleConfirmSubmit = async () => {
     try {
       // Call create task API after modal confirmation
-      const newTask: ITask = {
+      const newTask: any = {
         id: 0, // or omit if auto-generated
         title: taskTitle,
         description: taskDescription,
