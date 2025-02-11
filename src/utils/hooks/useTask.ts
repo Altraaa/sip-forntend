@@ -1,39 +1,47 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiRequest } from "../services/Api.service";
-import { useUser } from "./useUser"; // Assuming this hook fetches the user
+import { useUser } from "./useUser"; // Mengambil data user
 import { ITask } from "../models/Tasks";
-import { console } from "inspector";
+import { ISubject } from "../models/Subject";
+import { useSubjects } from "./useSubject";
 
-// Fetch tasks based on studentId
+// Fungsi untuk mengambil tasks
 const fetchTasks = async () => {
   const response = await ApiRequest({
-    url: "tasks", 
+    url: "tasks",
     method: "GET",
   });
   return response;
 };
 
-console.log(fetchTasks)
-
 export const useTasks = () => {
   const { data: user } = useUser();
+  const { data: subjects } = useSubjects(); // Mengambil data subjects
   const { data, isLoading, isError } = useQuery({
     queryKey: ["tasks", user?.id],
     queryFn: fetchTasks,
   });
 
-  // Filter tasks based on the studentId
+  // Filter tasks berdasarkan user.id
   const filteredTasks = data?.filter(
-    (task: any) => task.student_id === user?.id
+    (task: ITask) => task.student_id === user?.id
   );
 
+  // Gabungkan task dengan subject berdasarkan subject_id
+  const tasksWithSubjects = filteredTasks?.map((task: ITask) => {
+    const subject = subjects?.find((subject: ISubject) => subject.id === task.subject_id);
+    return {
+      ...task,
+      subject, // Menambahkan data subject ke dalam task
+    };
+  });
+
   return {
-    data: filteredTasks, // Return filtered tasks
+    data: tasksWithSubjects, // Mengembalikan tasks yang sudah digabung dengan subject
     isLoading,
     isError,
   };
 };
-
 
 // Fungsi untuk membuat tugas baru
 const createTask = async (newTask: ITask) => {
