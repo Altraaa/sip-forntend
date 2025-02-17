@@ -4,6 +4,8 @@ import { useUser } from "./useUser"; // Mengambil data user
 import { ITask } from "../models/Tasks";
 import { ISubject } from "../models/Subject";
 import { useSubjects } from "./useSubject";
+import { useTeachersData } from "./useTeacher";
+import { ITeacher } from "../models/Teacher";
 
 // Fungsi untuk mengambil tasks
 const fetchTasks = async () => {
@@ -17,6 +19,7 @@ const fetchTasks = async () => {
 export const useTasks = () => {
   const { data: user } = useUser();
   const { data: subjects } = useSubjects(); // Mengambil data subjects
+  const { teachers } = useTeachersData();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["tasks", user?.id],
     queryFn: fetchTasks,
@@ -28,16 +31,18 @@ export const useTasks = () => {
   );
 
   // Gabungkan task dengan subject berdasarkan subject_id
-  const tasksWithSubjects = filteredTasks?.map((task: ITask) => {
+  const taskDetail = filteredTasks?.map((task: ITask) => {
     const subject = subjects?.find((subject: ISubject) => subject.id === task.subject_id);
+    const teacher = teachers?.find((teacher: ITeacher) => teacher.id === task.subject_id);
     return {
       ...task,
       subject, // Menambahkan data subject ke dalam task
+      teacher,
     };
   });
 
   return {
-    data: tasksWithSubjects, // Mengembalikan tasks yang sudah digabung dengan subject
+    data: taskDetail, // Mengembalikan tasks yang sudah digabung dengan subject
     isLoading,
     isError,
   };

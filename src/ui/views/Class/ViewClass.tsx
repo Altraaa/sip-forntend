@@ -2,18 +2,11 @@ import { useStudents } from "@/utils/hooks/useStudent";
 import MainLayout from "../../layouts/MainLayout";
 import Loading from "@/ui/components/SharedCompoent/Loading";
 import { IStudent } from "@/utils/models/Student";
+import { useUser } from "@/utils/hooks/useUser";
 
 const ViewClass = () => {
   const { data, isLoading, error } = useStudents(); // menggunakan hook useStudents
-
-  if (isLoading) {
-    return (
-      <MainLayout title="Class">
-        <h2>Loading...</h2>
-        <Loading open={isLoading} />
-      </MainLayout>
-    );
-  }
+  const { data: userData } = useUser();
 
   if (error) {
     return (
@@ -25,7 +18,13 @@ const ViewClass = () => {
 
   return (
     <MainLayout title="Class">
-      <h2 className="text-2xl font-semibold">Student List</h2>
+      <Loading open={isLoading} />
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold mb-2">
+          Hi, <span className="text-customColor-oranye">{userData?.name}</span>
+        </h2>
+        <p className="text-gray-600">This is your class</p>
+      </div>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
@@ -56,68 +55,62 @@ const ViewClass = () => {
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map(
-              (
-                student: IStudent,
-                index: number
-              ) => (
-                <tr key={student.id}>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
-                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
-                      borderRadius:
-                        index === data.length - 1 ? "0 0 0 20px" : "0",
-                    }}
-                  >
-                    {student.attendance_number}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      backgroundColor:
-                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
-                    }}
-                  >
-                    {student.name}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
-                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
-                    }}
-                  >
-                    {student.nis}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
-                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
-                    }}
-                  >
-                    {student.phone_number ? student.phone_number : "-"}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
-                        student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
-                      borderRadius:
-                        index === data.length - 1 ? "0 0 20px" : "0", 
-                    }}
-                  >
-                    {student.description ? student.description : "-"}
-                  </td>
-                </tr>
-              )
-            )
+            data.map((student: IStudent, index: number) => (
+              <tr key={student.id}>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
+                      student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                    borderRadius:
+                      index === data.length - 1 ? "0 0 0 20px" : "0",
+                  }}
+                >
+                  {student.attendance_number}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    backgroundColor:
+                      student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                  }}
+                >
+                  {student.name}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
+                      student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                  }}
+                >
+                  {student.nis}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
+                      student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                  }}
+                >
+                  {student.phone_number ? student.phone_number : "-"}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
+                      student.id % 2 === 0 ? "#b5dde5" : "#c7e6eb",
+                    borderRadius: index === data.length - 1 ? "0 0 20px" : "0",
+                  }}
+                >
+                  {student.description ? student.description : "-"}
+                </td>
+              </tr>
+            ))
           ) : (
             <tr>
               <td colSpan={5} style={{ textAlign: "center", padding: "8px" }}>
