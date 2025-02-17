@@ -41,6 +41,13 @@ interface FormLayoutProps {
         errorMessage?: string;
         disabled?: boolean;
       }
+    | {
+        type: "image"; // Added image field type
+        label: string;
+        value: string; // Store the image base64 or file URL
+        onChange: (file: File) => void; // Callback for handling the file change
+        required?: boolean;
+      }
   )[];
   onSubmit: () => Promise<void> | void;
   buttonLabel?: string;
@@ -101,6 +108,24 @@ const FormLayout = ({
                 disabled={field.disabled}
                 className="w-full"
               />
+            ) : field.type === "image" ? ( // Handle image input
+              <>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {field.label}{" "}
+                  {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      field.onChange(file);
+                    }
+                  }}
+                  className="w-full border p-2 rounded-md"
+                />
+              </>
             ) : (
               <TextInput
                 label={field.label}

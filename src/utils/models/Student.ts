@@ -6,6 +6,7 @@ export interface IStudent {
   classroom_id: number;
   attendance_number: number;
   phone_number: number;
+  profile_picture: File | string;
   description: string;
   created_at: string;
   updated_at: string;

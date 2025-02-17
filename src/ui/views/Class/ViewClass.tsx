@@ -23,7 +23,7 @@ const ViewClass = () => {
         <h2 className="text-2xl font-semibold mb-2">
           Hi, <span className="text-customColor-oranye">{userData?.name}</span>
         </h2>
-        <p className="text-gray-600">This is your class</p>
+        <p className="text-gray-600">These are your classmates</p>
       </div>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
@@ -34,14 +34,36 @@ const ViewClass = () => {
                 backgroundColor: "#47acbe",
                 borderRadius: "20px 0 0 0",
                 borderTopLeftRadius: "20px",
-                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)"
+                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)",
               }}
             >
               Attendance
             </th>
-            <th style={{ padding: "8px", backgroundColor: "#47acbe", boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)" }}>Name</th>
-            <th style={{ padding: "8px", backgroundColor: "#47acbe", boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)"}}>NIS</th>
-            <th style={{ padding: "8px", backgroundColor: "#47acbe", boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)"}}>
+            <th
+              style={{
+                padding: "8px",
+                backgroundColor: "#47acbe",
+                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              Name
+            </th>
+            <th
+              style={{
+                padding: "8px",
+                backgroundColor: "#47acbe",
+                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              NIS
+            </th>
+            <th
+              style={{
+                padding: "8px",
+                backgroundColor: "#47acbe",
+                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)",
+              }}
+            >
               Phone Number
             </th>
             <th
@@ -49,7 +71,7 @@ const ViewClass = () => {
                 padding: "8px",
                 backgroundColor: "#47acbe",
                 borderRadius: "0 20px 0 0",
-                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)"
+                boxShadow: "1px 0 0 1px  rgba(0, 0, 0, 0.2)",
               }}
             >
               Description
@@ -58,80 +80,82 @@ const ViewClass = () => {
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map(
-              (
-                student: IStudent,
-                index: number
-              ) => (
-                <tr key={student.id}>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
+            data.map((student: IStudent, index: number) => (
+              <tr key={student.id}>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
                       student.id % 2 === 0 ? "#e5e5e5" : "#ffffff",
-                      borderRadius:
-                        index === data.length - 1 ? "0 0 0 20px" : "0",
-                      boxShadow:
-                        index === data.length - 1 ? "0 4px 0 0 rgba(0, 0, 0, 0.2)" : "",
-                      
-                    }}
-                  >
-                    {student.attendance_number}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      backgroundColor:
+                    borderRadius:
+                      index === data.length - 1 ? "0 0 0 20px" : "0",
+                    boxShadow:
+                      index === data.length - 1
+                        ? "0 4px 0 0 rgba(0, 0, 0, 0.2)"
+                        : "",
+                  }}
+                >
+                  {student.attendance_number}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    backgroundColor:
                       student.id % 2 === 0 ? "#e5e5e5" : "#ffffff",
-                      boxShadow:
-                        index === data.length - 1 ? "0 4px 0 0 rgba(0, 0, 0, 0.2)" : "",
-                    }}
-                  >
-                    {student.name}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
+                    boxShadow:
+                      index === data.length - 1
+                        ? "0 4px 0 0 rgba(0, 0, 0, 0.2)"
+                        : "",
+                  }}
+                >
+                  {student.name}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
                       student.id % 2 === 0 ? "#e5e5e5" : "#ffffff",
-                      boxShadow:
-                        index === data.length - 1 ? "0 4px 0 0 rgba(0, 0, 0, 0.2)" : "",
-                    
-                    }}
-                  >
-                    {student.nis}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
+                    boxShadow:
+                      index === data.length - 1
+                        ? "0 4px 0 0 rgba(0, 0, 0, 0.2)"
+                        : "",
+                  }}
+                >
+                  {student.nis}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
                       student.id % 2 === 0 ? "#e5e5e5" : "#ffffff",
-                      boxShadow:
-                        index === data.length - 1 ? "0 4px 0 0 rgba(0, 0, 0, 0.2)" : "",
-                    }}
-                  >
-                    {student.phone_number ? student.phone_number : "-"}
-                  </td>
-                  <td
-                    style={{
-                      padding: "8px",
-                      textAlign: "center",
-                      backgroundColor:
+                    boxShadow:
+                      index === data.length - 1
+                        ? "0 4px 0 0 rgba(0, 0, 0, 0.2)"
+                        : "",
+                  }}
+                >
+                  {student.phone_number ? student.phone_number : "-"}
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                    backgroundColor:
                       student.id % 2 === 0 ? "#e5e5e5" : "#ffffff",
-                      boxShadow:
-                        index === data.length - 1 ? "0 4px 0 0 rgba(0, 0, 0, 0.2)" : "",
-                      borderRadius:
-                        index === data.length - 1 ? "0 0 20px" : "0", 
-                    }}
-                  >
-                    {student.description ? student.description : "-"}
-                  </td>
-                </tr>
-              )
-            )
+                    boxShadow:
+                      index === data.length - 1
+                        ? "0 4px 0 0 rgba(0, 0, 0, 0.2)"
+                        : "",
+                    borderRadius: index === data.length - 1 ? "0 0 20px" : "0",
+                  }}
+                >
+                  {student.description ? student.description : "-"}
+                </td>
+              </tr>
+            ))
           ) : (
             <tr>
               <td colSpan={5} style={{ textAlign: "center", padding: "8px" }}>

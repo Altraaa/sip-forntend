@@ -83,7 +83,7 @@ const TeacherCard = ({
       <div className="w-20 h-20 bg-gray-300 rounded-full mb-2"></div>
       <h3 className="font-bold text-lg text-center">{teacher.name}</h3>
       <p className="text-md text-center">{`${teacher.subject?.name}`}</p>
-      <p className="text-xs text-center">NIP: {teacher.nip || "Unknown"}</p>
+      <p className="text-xs text-center">Teacher Code: {teacher.nip || "Unknown"}</p>
     </Card>
   );
 };
@@ -121,7 +121,7 @@ const TeacherPopup = ({
             <p className="font-semibold mt-4">Mata Pelajaran</p>
             <p>{`${teacher.subject?.name}`}</p>
             <p className="mt-2">
-              <span className="font-semibold">NIP:</span>{" "}
+              <span className="font-semibold">Teacher Code:</span>{" "}
               {teacher.nip || "Unknown"}
             </p>
             <p className="font-semibold mt-2">Kontak:</p>

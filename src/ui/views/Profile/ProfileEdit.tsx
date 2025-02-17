@@ -1,11 +1,14 @@
 import MainLayout from "../../layouts/MainLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProfileData } from "@/utils/hooks/userProfile";
 import { userEditProfile } from "@/utils/hooks/userProfile";
 import { IStudent } from "@/utils/models/Student";
 import Loading from "@/ui/components/SharedCompoent/Loading";
 import FormLayout from "../../layouts/FormLayout";
+import { showModernToast } from "@/ui/components/SharedCompoent/ModernToastContainer";
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
 
 const ProfileEdit = () => {
   const navigate = useNavigate();
@@ -14,21 +17,43 @@ const ProfileEdit = () => {
   const [userNis, setUserNis] = useState(user?.nis);
   const [userPhoneNumber, setUserPhoneNumber] = useState("");
   const [userDescription, setUserDescription] = useState("");
-  // const [userProfilePicture, setUserProfilePicture] = useState(user?.profile_picture);
+  const [userProfilePicture, setUserProfilePicture] = useState(
+    user?.profile_picture || ""
+  );
   const [error, setError] = useState<string | null>(null);
 
   const { mutate: editProfile } = userEditProfile();
 
+  useEffect(() => {
+    if (user) {
+      setUserPhoneNumber(user.phone_number?.toString() || "");
+      setUserDescription(user.description || "");
+      setUserProfilePicture(user.profile_picture || "");
+    }
+  }, [user]);
+
+  const handleImageChange = (file: File) => {
+    if (file.size > MAX_FILE_SIZE) {
+      setError("File size must be less than 2MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setUserProfilePicture(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async () => {
     try {
-      if (
-        !userName || !userNis || !userPhoneNumber || !userDescription 
-      ) {
+      if (!userName || !userNis || !userPhoneNumber || !userDescription) {
         setError("All fields are required.");
+        return;
       }
 
       if (!/^\d+$/.test(userPhoneNumber)) {
-        setError("Phone number must contain only numbers.")
+        setError("Phone number must contain only numbers.");
+        return;
       }
 
       const dataProfile: IStudent = {
@@ -40,37 +65,30 @@ const ProfileEdit = () => {
         attendance_number: user?.attendance_number,
         phone_number: Number(userPhoneNumber),
         description: userDescription,
+        profile_picture: userProfilePicture,
         created_at: user?.created_at,
         updated_at: new Date().toISOString(),
-      }
-      editProfile(dataProfile);
-      navigate("/profile");
+      };
+
+      editProfile(dataProfile, {
+        onSuccess: () => {
+          showModernToast.success("Profile updated successfully!");
+          navigate("/profile");
+        },
+        onError: () => {
+          setError("An error occurred while submitting the form.");
+          showModernToast.error("Failed to update profile.");
+        },
+      });
     } catch (error) {
-      setError("An error uccurred while submitting the form.")
+      setError("An unexpected error occurred.");
+      showModernToast.error("An unexpected error occurred.");
     }
-  }
-
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setUserProfilePicture((prev) => ({
-  //         ...prev,
-  //         profilePicture: reader.result as string,
-  //       }));
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
-  // const handleCancel = () => {
-  //   navigate("/profile");
-  // };
+  };
 
   return (
     <MainLayout title="Edit Profile">
-      <Loading open={loading}/>
+      <Loading open={loading} />
       <div className="w-full flex justify-center">
         <div className="w-full">
           <FormLayout
@@ -83,7 +101,7 @@ const ProfileEdit = () => {
                 type: "text",
                 value: userName,
                 onChange: setUserName,
-                disabled: true
+                disabled: true,
               },
               {
                 label: "NIS",
@@ -91,7 +109,7 @@ const ProfileEdit = () => {
                 type: "text",
                 value: userNis,
                 onChange: setUserNis,
-                disabled: true
+                disabled: true,
               },
               {
                 label: "Phone Number",
@@ -99,7 +117,7 @@ const ProfileEdit = () => {
                 type: "number",
                 value: userPhoneNumber,
                 onChange: setUserPhoneNumber,
-                required: true
+                required: true,
               },
               {
                 label: "Description",
@@ -110,6 +128,12 @@ const ProfileEdit = () => {
                 required: true,
                 rows: 4,
               },
+              {
+                label: "Profile Picture",
+                type: "image",
+                value: userProfilePicture,
+                onChange: handleImageChange,
+              },
             ]}
             onSubmit={handleSubmit}
             buttonLabel="Update Profile"
@@ -117,26 +141,6 @@ const ProfileEdit = () => {
           />
         </div>
       </div>
-
-          {/* Bagian Ganti Foto Profil
-          <div className="col-span-1 md:col-span-2 flex flex-col items-center mb-8">
-            <img
-              src={userProfilePicture}
-              alt="Profile"
-              className="w-40 h-40 rounded-full object-cover mb-5"
-            />
-            <label className="bg-customColor-blue text-white px-8 py-2 flex items-center justify-center gap-2 rounded-md cursor-pointer">
-            <ImageUp size={25} />
-              Change Photo
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-          </div> */}
-
     </MainLayout>
   );
 };

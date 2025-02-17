@@ -107,7 +107,7 @@ const ViewDashboard = () => {
             />
             <Card
               title={todayData?.teacher || "No Data"}
-              desc={`NIP: ${todayData?.nip || "-"}`}
+              desc={`Teacher Code: ${todayData?.nip || "-"}`}
               icon={<User size={24} />}
               iconClassName="bg-customColor-lightOranye text-white"
               color="third"
