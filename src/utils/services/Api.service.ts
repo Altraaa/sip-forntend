@@ -18,7 +18,7 @@ export const DefaultHeaders = {
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}`
-    : "https://api-sip.krisnatesting.com",
+    : "https://api-sip.krisnatesting.com/api",
   timeout: 50000,
   headers: DefaultHeaders,
 });
